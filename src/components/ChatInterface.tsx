@@ -2,10 +2,10 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Send, Loader2 } from "lucide-react";
+import { Send, Loader2, Mic, StopCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import AnimatedOtter from './AnimatedOtter';
-import { getDebateResponse, textToSpeech, fetchVoices, Voice } from '@/lib/api';
+import { getDebateResponse, textToSpeech, fetchVoices, transcribeAudio, Voice } from '@/lib/api';
 
 // Interface for chat messages
 interface Message {
@@ -29,12 +29,15 @@ const ChatInterface = () => {
   const [chatHistory, setChatHistory] = useState<Message[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   const [voices, setVoices] = useState<Voice[]>([]);
   const [selectedVoice, setSelectedVoice] = useState<string>('');
   
   const { toast } = useToast();
   const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
   const messageEndRef = useRef<HTMLDivElement | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
 
   // Load available voices when component mounts
   useEffect(() => {
@@ -61,12 +64,27 @@ const ChatInterface = () => {
       }
     ]);
   }, []);
-  
-  // Auto-scroll to the latest message
+    // Auto-scroll to the latest message
   useEffect(() => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatHistory]);
-
+  
+  // Set up audio player
+  useEffect(() => {
+    if (audioPlayerRef.current) {
+      audioPlayerRef.current.onplay = () => setIsSpeaking(true);
+      audioPlayerRef.current.onpause = () => setIsSpeaking(false);
+      audioPlayerRef.current.onended = () => setIsSpeaking(false);
+    }
+    
+    return () => {
+      // Clean up on unmount
+      if (audioPlayerRef.current) {
+        audioPlayerRef.current.pause();
+        setIsSpeaking(false);
+      }
+    };
+  }, []);
   // Handle sending a new message
   const handleSendMessage = async (text: string = inputText) => {
     if (!text.trim()) return;
@@ -82,6 +100,113 @@ const ChatInterface = () => {
     setIsProcessing(true);
     
     try {
+      await processMessage(text.trim());
+    } catch (error) {
+      console.error('Error in handleSendMessage:', error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+  // Handle key press in the input field
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !isProcessing) {
+      handleSendMessage();
+    }
+  };
+
+  // Handle quick reply selection
+  const handleQuickReply = (reply: string) => {
+    setInputText(reply);
+    handleSendMessage(reply);
+  };
+  
+  // Start audio recording
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+      
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          audioChunksRef.current.push(e.data);
+        }
+      };
+      
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+        await processAudioInput(audioBlob);
+        
+        // Stop the audio tracks to release the microphone
+        stream.getTracks().forEach(track => track.stop());
+      };
+      
+      mediaRecorder.start();
+      setIsRecording(true);
+      
+      toast({
+        title: "Recording started",
+        description: "Speak your question and click 'Stop Recording' when finished.",
+      });
+    } catch (error) {
+      console.error('Error accessing microphone:', error);
+      toast({
+        title: "Microphone access failed",
+        description: "Could not access your microphone. Please check your browser permissions.",
+        variant: "destructive",
+      });
+    }
+  };
+  
+  // Stop audio recording
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+  
+  // Process audio from microphone
+  const processAudioInput = async (audioBlob: Blob) => {
+    try {
+      setIsProcessing(true);
+      
+      // Step 1: Transcribe audio to text
+      const userText = await transcribeAudio(audioBlob);
+      if (!userText) {
+        throw new Error("Transcription returned empty text");
+      }
+      
+      // Create a URL for the audio blob for playback
+      const audioUrl = URL.createObjectURL(audioBlob);
+      
+      // Add user message to chat history with audio
+      const userMessage: Message = {
+        role: 'user',
+        text: userText,
+        audio: audioUrl
+      };
+      
+      setChatHistory(prev => [...prev, userMessage]);
+      
+      // Process the transcribed text as a message
+      await processMessage(userText);
+    } catch (error) {
+      console.error('Error processing audio input:', error);
+      toast({
+        title: "Processing error",
+        description: "An error occurred while processing your audio. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+  
+  // Common processing for both text and audio inputs
+  const processMessage = async (text: string) => {
+    try {
       // Prepare history for the API in the format expected by the backend
       const historyPairs: [string, string][] = [];
       for (let i = 0; i < chatHistory.length; i += 2) {
@@ -93,10 +218,9 @@ const ChatInterface = () => {
         }
       }
       
-      // Get AI response - using the existing API but adapting it for chat context
-      // Note: The API may need to be updated to handle chat vs debate format
+      // Get AI response
       const aiResponse = await getDebateResponse(
-        text.trim(),
+        text,
         historyPairs,
         'chatbot', // Using a neutral stance
         Math.floor(chatHistory.length / 2) + 1
@@ -146,24 +270,8 @@ const ChatInterface = () => {
           text: "I'm sorry, I couldn't process your request. Please try again." 
         }
       ]);
-    } finally {
-      setIsProcessing(false);
     }
   };
-
-  // Handle key press in the input field
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !isProcessing) {
-      handleSendMessage();
-    }
-  };
-
-  // Handle quick reply selection
-  const handleQuickReply = (reply: string) => {
-    setInputText(reply);
-    handleSendMessage(reply);
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">
       {/* Hidden audio player for AI speech */}
@@ -174,6 +282,14 @@ const ChatInterface = () => {
         <div className="flex items-center">
           <img src="/logo.png" alt="SIT Logo" className="h-10 mr-3" />
           <h1 className="text-xl font-semibold text-teal-700">SIT ChatBot</h1>
+          
+          {/* Recording indicator */}
+          {isRecording && (
+            <div className="ml-3 flex items-center text-red-500 animate-pulse">
+              <span className="h-2 w-2 rounded-full bg-red-500 mr-2"></span>
+              <span className="text-xs font-medium">Recording...</span>
+            </div>
+          )}
         </div>
         <div className="w-12 h-12 rounded-full overflow-hidden">
           <svg viewBox="0 0 300 300" className="w-full h-full">
@@ -199,8 +315,7 @@ const ChatInterface = () => {
               <div
                 key={index}
                 className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div
+              >                <div
                   className={`max-w-[80%] p-3 rounded-lg ${
                     message.role === 'user'
                       ? 'bg-gray-100 text-gray-800'
@@ -209,21 +324,37 @@ const ChatInterface = () => {
                 >
                   <p className="text-sm md:text-base">{message.text}</p>
                   
-                  {/* Show play button if audio is available */}
+                  {/* Show audio controls if audio is available */}
                   {message.audio && (
-                    <button
-                      onClick={() => {
-                        if (audioPlayerRef.current) {
-                          audioPlayerRef.current.src = message.audio!;
-                          audioPlayerRef.current.onplay = () => setIsSpeaking(true);
-                          audioPlayerRef.current.onended = () => setIsSpeaking(false);
-                          audioPlayerRef.current.play();
-                        }
-                      }}
-                      className="mt-2 text-xs text-teal-600 hover:text-teal-800"
-                    >
-                      Play audio
-                    </button>
+                    <div className="mt-2 flex items-center gap-2">                      <button
+                        onClick={() => {
+                          if (audioPlayerRef.current) {
+                            // First pause any currently playing audio
+                            audioPlayerRef.current.pause();
+                            
+                            // Set the new source and play
+                            audioPlayerRef.current.src = message.audio!;
+                            audioPlayerRef.current.play().catch(e => {
+                              console.error('Error playing audio:', e);
+                              setIsSpeaking(false);
+                            });
+                          }
+                        }}
+                        className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${
+                          message.role === 'user' 
+                            ? 'bg-blue-100 text-blue-800 hover:bg-blue-200' 
+                            : 'bg-teal-200 text-teal-800 hover:bg-teal-300'
+                        }`}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        Play
+                      </button>
+                      <span className="text-xs text-gray-500">
+                        {message.role === 'user' ? 'Your voice input' : 'Listen'}
+                      </span>
+                    </div>
                   )}
                 </div>
               </div>
@@ -261,8 +392,7 @@ const ChatInterface = () => {
             </Button>
           ))}
         </div>
-        
-        {/* Input area */}
+          {/* Input area */}
         <div className="flex gap-2">
           <Input
             value={inputText}
@@ -270,22 +400,51 @@ const ChatInterface = () => {
             onKeyPress={handleKeyPress}
             placeholder="Type your question..."
             className="flex-1 border-teal-200 focus-visible:ring-teal-400"
-            disabled={isProcessing}
+            disabled={isProcessing || isRecording}
           />
+            {/* Send button */}
           <Button
             onClick={() => handleSendMessage()}
-            disabled={!inputText.trim() || isProcessing}
+            disabled={(!inputText.trim() && !isRecording) || isProcessing}
             className="bg-teal-600 hover:bg-teal-700 text-white"
+            title="Send message"
           >
             <Send className="h-4 w-4" />
             <span className="sr-only">Send</span>
           </Button>
+          
+          {/* Microphone button */}
+          {!isRecording ? (
+            <Button
+              onClick={startRecording}
+              disabled={isProcessing}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+              title="Start voice recording"
+              aria-label="Start voice recording"
+            >
+              <Mic className="h-4 w-4" />
+              <span className="hidden sm:inline ml-1">Voice</span>
+            </Button>
+          ) : (
+            <Button
+              onClick={stopRecording}
+              disabled={isProcessing}
+              className="bg-red-600 hover:bg-red-700 text-white animate-pulse"
+              title="Stop recording"
+              aria-label="Stop recording"
+            >
+              <StopCircle className="h-4 w-4" />
+              <span className="hidden sm:inline ml-1">Stop</span>
+            </Button>
+          )}
         </div>
       </div>
-      
-      {/* Animated otter container - positioned at the bottom right */}
-      <div className="fixed bottom-4 right-4 w-[150px] h-[150px]">
+        {/* Animated otter container - positioned at the bottom right */}
+      <div className="fixed bottom-4 right-4 w-[150px] h-[150px] group">
         <AnimatedOtter speaking={isSpeaking} />
+        <div className="absolute bottom-full right-0 mb-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white p-2 rounded shadow-md text-xs text-center pointer-events-none">
+          {isSpeaking ? 'Speaking...' : 'SIT Mascot (Tap any message with audio to hear it)'}
+        </div>
       </div>
     </div>
   );
