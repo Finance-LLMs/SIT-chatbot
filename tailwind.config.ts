@@ -62,13 +62,22 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				},
-				debator: {
+				},				debator: {
 					'primary': '#e67e55', // Main terracotta color
 					'secondary': '#f8d8b9', // Lighter accent color
 					'background': '#fdf4eb', // Light beige background
 					'text': '#3a3a3a', // Dark text color
 					'button': '#2d3748', // Button color
+				},
+				sitchat: {
+					'primary': '#0f766e', // Deep teal
+					'secondary': '#14b8a6', // Medium teal
+					'light': '#99f6e4', // Light teal/aqua
+					'accent': '#0891b2', // Blue teal
+					'background': '#ecfeff', // Very light cyan
+					'user-bubble': '#f3f4f6', // Light gray for user messages
+					'bot-bubble': '#ccfbf1', // Light teal for bot messages
+					'text': '#1e293b', // Dark slate for text
 				}
 			},
 			borderRadius: {

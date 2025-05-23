@@ -1,8 +1,8 @@
 
-import DebateInterface from "@/components/DebateInterface";
+import ChatInterface from "@/components/ChatInterface";
 
 const Index = () => {
-  return <DebateInterface />;
+  return <ChatInterface />;
 };
 
 export default Index;
