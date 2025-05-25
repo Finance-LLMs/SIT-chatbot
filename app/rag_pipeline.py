@@ -34,30 +34,30 @@ def query_llm(vector_db, query):
 
 vector_db = load_db()
 
-def llm_response_finance(query: str) -> str:
-    # Add a financial knowledge prompt to guide the LLM
-    system_prompt = (
-        "You are a financial expert. Use the information from the provided documents and your financial knowledge to answer the following question as accurately and concisely as possible. "
-        "If the answer is not present in the documents, say so.\n\nQuestion: "
-    )
-    full_prompt = system_prompt + query
-    response = query_llm(vector_db, full_prompt)
-    return response
+# def llm_response_finance(query: str) -> str:
+#     # Add a financial knowledge prompt to guide the LLM
+#     system_prompt = (
+#         "You are a financial expert. Use the information from the provided documents and your financial knowledge to answer the following question as accurately and concisely as possible. "
+#         "If the answer is not present in the documents, say so.\n\nQuestion: "
+#     )
+#     full_prompt = system_prompt + query
+#     response = query_llm(vector_db, full_prompt)
+#     return response
 
-def llm_response_sit(query: str) -> str:
-    # Add a SIT knowledge prompt to guide the LLM
-    system_prompt = (
-        "You are an expert on the Singapore Institute of Technology (SIT). Use the information from the provided documents and your knowledge to answer the following question as accurately and concisely as possible. "
-        "If the answer is not present in the documents, say so.\n\nQuestion: "
-    )
-    full_prompt = system_prompt + query
-    response = query_llm(vector_db, full_prompt)
-    return response
+# def llm_response_sit(query: str) -> str:
+#     # Add a SIT knowledge prompt to guide the LLM
+#     system_prompt = (
+#         "You are an expert on the Singapore Institute of Technology (SIT). Use the information from the provided documents and your knowledge to answer the following question as accurately and concisely as possible. "
+#         "If the answer is not present in the documents, say so.\n\nQuestion: "
+#     )
+#     full_prompt = system_prompt + query
+#     response = query_llm(vector_db, full_prompt)
+#     return response
 
 # For medical debate
-def llm_response_medical_debate(query: str, debate_side: str = "for") -> str:
-    topic = "AI in healthcare, allowing AI to override human decisions in healthcare."
-    user_argument = query
+def llm_response_sit_debate(query: str, debate_side: str = "for") -> str:
+    # topic = "AI in healthcare, allowing AI to override human decisions in healthcare."
+    # user_argument = query
 #     user_argument = '''
 #     AI is a tool—yes, a powerful one—but allowing it to overrule human judgment leads us down a dangerous path. It risks eroding personal autonomy, moral responsibility, and even the principles of democratic decision-making.
 
@@ -75,20 +75,11 @@ def llm_response_medical_debate(query: str, debate_side: str = "for") -> str:
     response_length = 20
     
     system_prompt = (
-        f"You are my opposing debater, participating in a formal debate and you have to give a speech, arguing {debate_side.upper()} "
-        f"the following proposition: '{topic}'. "
-        f"I am your opponent and I just made an argument: {user_argument}\n\n"
-        f"Respond to my argument. "
-        f"Your response should include sarcasm, humor, and a counter-argument. And try to counter question my argument. "
-        f"Be persuasive, logical, and cite evidence when possible. "
-        f"Keep your response in approximately {response_length} words. "
-        f"Sound like a confident professional in a debate.\n\n"
-        f"Very important: give your response as one paragraph with all the final arguments. "
-        f"It is very very important that you keep your response to {response_length} words. Just elaborate on all the points\n\n"
-        f"Your response:\n"
+        "You are an expert on the Singapore Institute of Technology (SIT). Use the information from the provided documents and your knowledge to answer the following question as accurately and concisely as possible. "
+        "If the answer is not present in the documents, say so.\n\nQuestion: "
     )
     
-    full_prompt = system_prompt
+    full_prompt = system_prompt + query
     
     if vector_db:
         response = query_llm(vector_db, full_prompt)

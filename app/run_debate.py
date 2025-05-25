@@ -7,7 +7,7 @@ import json
 
 # Add the directory containing this script to the Python path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from rag_pipeline import llm_response_medical_debate
+from rag_pipeline import llm_response_sit_debate
 
 if __name__ == "__main__":
     if len(sys.argv) < 4:
@@ -31,7 +31,7 @@ if __name__ == "__main__":
         llm = OllamaLLM(model="qwen2:1.5b", temperature=0.7)
         
         print("Generating debate response...")
-        response = llm_response_medical_debate(
+        response = llm_response_sit_debate(
             query=user_input,
             debate_side=debate_side
         )
