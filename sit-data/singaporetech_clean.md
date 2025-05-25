@@ -1,98 +1,95 @@
-[\\
-\\
-**Game On, One Code at a Time**\\
-\\
-\\
+[\
+\
+**Game On, One Code at a Time**\
+\
+\
 SIT-DigiPen alumnus Nico Wong’s dream career as a programmer in the gaming industry took root after winning the confidence of his supervisor and team members during his Integrated Work Study Programme (IWSP).](https://www.singaporetech.edu.sg/news/game-one-code-time?utm_source=home&utm_medium=banner&utm_campaign=featured)
 
-[\\
-\\
+[\
+\
 **Fighting Fire with Knowledge**](https://www.singaporetech.edu.sg/news/fighting-fire-knowledge?utm_source=home&utm_medium=banner&utm_campaign=featured)
 
-[\\
-\\
+[\
+\
 **Empowering Stroke Survivors through Sport: SIT and SNSA-Led Campaign Earns Global Praise**](https://www.singaporetech.edu.sg/news/empowering-stroke-survivors-through-sport-sit-and-snsa-led-campaign-earns-global-praise?utm_source=home&utm_medium=banner&utm_campaign=featured)
 
 Highlights
 
-- Features
-- Press Releases
-- [in\\
 the news](https://www.singaporetech.edu.sg/#)
 
-[see all\\
+[see all\
 news](https://www.singaporetech.edu.sg/news)
 
-[\\
-\\
-- Living Medicine: How Engineered Bacteria Evolved from Combating Amebiasis to Revolutionising Cancer Treatment \\
-- 9 May 2025\\
+[\
+\
+- Living Medicine: How Engineered Bacteria Evolved from Combating Amebiasis to Revolutionising Cancer Treatment \
+- 9 May 2025\
 - The groundbreaking concept of engineered bacteria, initially developed to combat the parasitic infection amebiasis, has evolved into a revolutionary approach for treating nasopharyngeal carcinoma -by delivering cancer-fighting drugs with pinpoint accuracy](https://www.singaporetech.edu.sg/news/living-medicine-how-engineered-bacteria-evolved-combating-amebiasis-revolutionising-cancer-treatment)
 
-[\\
-\\
-- Facilitating Post-Stroke Care With Gamified Intervention\\
+[\
+\
+- Facilitating Post-Stroke Care With Gamified Intervention\
 - 6 May 2025](https://www.singaporetech.edu.sg/news/facilitating-post-stroke-care-gamified-intervention)
 
-[\\
-\\
-- Stuffed with Success: CIA Alumna Wins First-Ever World Stuffed Cabbage Championship \\
+[\
+\
+- Stuffed with Success: CIA Alumna Wins First-Ever World Stuffed Cabbage Championship \
 - 30 Apr 2025](https://www.singaporetech.edu.sg/news/stuffed-success-cia-alumna-wins-first-ever-world-stuffed-cabbage-championship)
 
-[\\
-\\
-- A Serendipitous Partnership and the SIT Connection\\
+[\
+\
+- A Serendipitous Partnership and the SIT Connection\
 - 25 Apr 2025](https://www.singaporetech.edu.sg/news/serendipitous-partnership-and-sit-connection)
 
-[\\
-\\
-- ABS and the Singapore Institute of Technology Sign Strategic Agreement to Explore Innovation in Applied Research and Talent Development\\
-- 1 Apr 2025\\
+[\
+\
+- ABS and the Singapore Institute of Technology Sign Strategic Agreement to Explore Innovation in Applied Research and Talent Development\
+- 1 Apr 2025\
 - Advancing Cutting-Edge Maritime Technologies and Nurturing Industry-Ready Talent](https://www.singaporetech.edu.sg/news/abs-and-singapore-institute-technology-sign-strategic-agreement-explore-innovation-applied-research)
 
-[\\
-\\
-- SIT Introduces Singapore’s First Competency-Based Undergraduate Engineering Degrees and a Unique Interdisciplinary Business Programme\\
+[\
+\
+- SIT Introduces Singapore’s First Competency-Based Undergraduate Engineering Degrees and a Unique Interdisciplinary Business Programme\
 - 6 Jan 2025](https://www.singaporetech.edu.sg/news/sit-introduces-singapores-first-competency-based-undergraduate-engineering-degrees-and-unique)
 
-[\\
-\\
-- SIT Awards New Transcripts to Recognise Graduates’ Transferable Skills\\
+[\
+\
+- SIT Awards New Transcripts to Recognise Graduates’ Transferable Skills\
 - 16 Oct 2024](https://www.singaporetech.edu.sg/news/sit-awards-new-transcripts-recognise-graduates-transferable-skills)
 
-[\\
-\\
-- OCBC to Invest $500 Million in Punggol Digital District\\
+[\
+\
+- OCBC to Invest $500 Million in Punggol Digital District\
 - 18 Sep 2024](https://www.singaporetech.edu.sg/news/ocbc-invest-500-million-punggol-digital-district)
 
-[- \\
-The Straits Times - Feeling the Pinch? How to Cut $100 from Your Monthly Bills\\
-\\
+[- \
+The Straits Times - Feeling the Pinch? How to Cut $100 from Your Monthly Bills\
+\
 - 19 May 2025](https://www.straitstimes.com/life/feeling-the-pinch-how-to-cut-100-from-your-monthly-bills)
 
-[- \\
-The Straits Times - Singapore to Expand Aquaculture Operations in East Johor Strait from 2026\\
-\\
+[- \
+The Straits Times - Singapore to Expand Aquaculture Operations in East Johor Strait from 2026\
+\
 - 16 May 2025](https://www.straitstimes.com/singapore/environment/singapore-to-expand-aquaculture-operations-in-east-johor-strait-from-2026)
 
-[- \\
-Southeast Asia Infrastructure - A Pioneering Approach to Green Urban Infrastructure \\
-\\
+[- \
+Southeast Asia Infrastructure - A Pioneering Approach to Green Urban Infrastructure \
+\
 - 15 May 2025](https://southeastasiainfra.com/views-of-steve-kardinal-jusuf/)
 
-[- \\
-RICE Media - Anchors Aweigh: Meet Singapore’s New Maritime Innovators\\
-\\
+[- \
+RICE Media - Anchors Aweigh: Meet Singapore’s New Maritime Innovators\
+\
 - 07 May 2025](https://www.ricemedia.co/singapore-new-maritime-innovators/)
 
-[- \\
-Asian Scientist - Facilitating Post-Stroke Care With Gamified Intervention\\
-\\
+[- \
+Asian Scientist - Facilitating Post-Stroke Care With Gamified Intervention\
+\
 - 29 Apr 2025](https://www.asianscientist.com/2025/04/sponsored-feature/gamified-post-stroke-care-sit/)
 
-[- \\
-Open Gov - Singapore: SIT’s Innovations for Sustainable Maritime Practices\\
-\\
+[- \
+Open Gov - Singapore: SIT’s Innovations for Sustainable Maritime Practices\
+\
 - 24 Apr 2025](https://opengovasia.com/2025/04/24/singapore-sits-innovations-for-sustainable-maritime-practices/)
 
 see all news
@@ -111,43 +108,43 @@ real-world experiences and the latest discoveries in their fields to our program
 laboratory or the classroom, students deal with cutting-edge technology on a daily basis. Learning by
 thinking and doing, continuously creating and disrupting.
 
-[\\
-\\
-- Business, Communication and Design\\
-- Here’s where science meets creativity and commerce. Choose from\\
-degrees across a variety of client-facing industries, such as digital communication, integrated media,\\
-hospitality business, accountancy, and the culinary arts.\\
+[\
+\
+- Business, Communication and Design\
+- Here’s where science meets creativity and commerce. Choose from\
+degrees across a variety of client-facing industries, such as digital communication, integrated media,\
+hospitality business, accountancy, and the culinary arts.\
 - Explore](https://www.singaporetech.edu.sg/undergraduate-programmes/business-communication-and-design)
 
-[\\
-\\
-- Engineering\\
-- What will you build for tomorrow’s world? Explore degree programmes\\
-in aerospace, civil, electrical, mechanical, marine, and data engineering.\\
+[\
+\
+- Engineering\
+- What will you build for tomorrow’s world? Explore degree programmes\
+in aerospace, civil, electrical, mechanical, marine, and data engineering.\
 - Explore](https://www.singaporetech.edu.sg/undergraduate-programmes/engineering)
 
-[\\
-\\
-- Food, Chemical and Biotechnology\\
-- Understand how raw materials are turned into plastics, metals,\\
-clothing, and energy. Study the technology behind medicines that heal and foods that nourish. Discover\\
-ways to enhance life, promote wellness, protect the environment, and grow economies.\\
+[\
+\
+- Food, Chemical and Biotechnology\
+- Understand how raw materials are turned into plastics, metals,\
+clothing, and energy. Study the technology behind medicines that heal and foods that nourish. Discover\
+ways to enhance life, promote wellness, protect the environment, and grow economies.\
 - Explore](https://www.singaporetech.edu.sg/undergraduate-programmes/food-chemical-and-biotechnology)
 
-[\\
-\\
-- Health and Social Sciences\\
-- Science continues to enhance healthcare and revolutionise a range of\\
-therapies. Learn the technologies and techniques behind nursing and allied health services like\\
-radiography, physiotherapy, occupational therapy, speech therapy, dietetics and nutrition.\\
+[\
+\
+- Health and Social Sciences\
+- Science continues to enhance healthcare and revolutionise a range of\
+therapies. Learn the technologies and techniques behind nursing and allied health services like\
+radiography, physiotherapy, occupational therapy, speech therapy, dietetics and nutrition.\
 - Explore](https://www.singaporetech.edu.sg/undergraduate-programmes/health-and-social-sciences)
 
-[\\
-\\
-- Infocomm Technology\\
-- Build systems that keep the world connected. Become a professional in\\
-information and communication technologies with degree programmes like computer science, infocomm\\
-security, telematics, game design, and digital art.\\
+[\
+\
+- Infocomm Technology\
+- Build systems that keep the world connected. Become a professional in\
+information and communication technologies with degree programmes like computer science, infocomm\
+security, telematics, game design, and digital art.\
 - Explore](https://www.singaporetech.edu.sg/undergraduate-programmes/infocomm-technology)
 
 about us
@@ -168,7 +165,7 @@ Spread
 across six campuses, and partnered with nine reputable overseas universities, SIT offers a curriculum
 that blends innovation and expertise with applied research and practical experience.
 
-[Explore\\
+[Explore\
 More](https://www.singaporetech.edu.sg/why-sit)
 
 applied learning
@@ -184,26 +181,26 @@ Integrated Work Study Programme (IWSP) which immerses students in real work envi
 them to tackle real-world problems and understand what industries and markets require. Students will
 gain insights that could fuel ideas for future innovations.
 
-[Explore\\
+[Explore\
 More](https://www.singaporetech.edu.sg/applied-learning)
 
 Life on Campus
 
 explore life @ sit
 
-[\\
-\\
-- First Year Experience\\
+[\
+\
+- First Year Experience\
 - Explore](https://www.singaporetech.edu.sg/admissions/undergraduate/matriculation/sit-first-year-experience)
 
-[\\
-\\
-- Find your Tribe\\
+[\
+\
+- Find your Tribe\
 - Explore](https://www.singaporetech.edu.sg/life-at-sit/find-your-tribe)
 
-[\\
-\\
-- Life Readiness\\
+[\
+\
+- Life Readiness\
 - Explore](https://www.singaporetech.edu.sg/life-at-sit/life-readiness)
 
 explore life @ sit
@@ -212,36 +209,36 @@ Hear from
 
 our SITizens
 
-[\\
-\\
-- Hanna Amani Binte Mahmud \\
-\\
-Software Engineer, Continental AG\\
-- SIT is a microcosm of the working world, where we work in projects with varying dynamics. We learn soft skills to communicate our ideas effectively, which goes a long way in resolving conflicts.\\
+[\
+\
+- Hanna Amani Binte Mahmud \
+\
+Software Engineer, Continental AG\
+- SIT is a microcosm of the working world, where we work in projects with varying dynamics. We learn soft skills to communicate our ideas effectively, which goes a long way in resolving conflicts.\
 - Watch Video](https://www.youtube.com/watch?v=evh0_sPnXdU)
 
-[\\
-\\
-- Mukesh Balu Chitiran \\
-\\
-Lean Specialist, General Electric Aerospace (Singapore)\\
-- We actively learn by working on real-world projects with industry partners. My team and I implemented a trend analysis dashboard at SBS Transit, which won a Gold Award.\\
+[\
+\
+- Mukesh Balu Chitiran \
+\
+Lean Specialist, General Electric Aerospace (Singapore)\
+- We actively learn by working on real-world projects with industry partners. My team and I implemented a trend analysis dashboard at SBS Transit, which won a Gold Award.\
 - Watch Video](https://www.youtube.com/watch?v=iw8c4rgp9Ww)
 
-[\\
-\\
-- Tan Ellice \\
-\\
-Year 2, Robotics Systems\\
-- Industry 4.0 is the next big thing in engineering, and I want to be part of it. The Robotics Systems degree programme at SIT allows me to read the relevant knowledge and skills to be a robotics engineer after graduation.\\
+[\
+\
+- Tan Ellice \
+\
+Year 2, Robotics Systems\
+- Industry 4.0 is the next big thing in engineering, and I want to be part of it. The Robotics Systems degree programme at SIT allows me to read the relevant knowledge and skills to be a robotics engineer after graduation.\
 - Watch Video](https://www.youtube.com/watch?v=pLtE_Qa06ow)
 
-[\\
-\\
-- Pang Zhuo Wei \\
-\\
-Diagnostic Radiographer, Tan Tock Seng Hospital\\
-- I'm grateful for diverse learning opportunities working on cross-disciplinary projects with Finnish students and publishing an article with Metropolia University of Applied Sciences on managing radiation dosage in CT images.\\
+[\
+\
+- Pang Zhuo Wei \
+\
+Diagnostic Radiographer, Tan Tock Seng Hospital\
+- I'm grateful for diverse learning opportunities working on cross-disciplinary projects with Finnish students and publishing an article with Metropolia University of Applied Sciences on managing radiation dosage in CT images.\
 - Watch Video](https://www.youtube.com/watch?v=Nhjjg2M_6Ns)
 
 Instagram
@@ -268,11 +265,7 @@ Stay tuned as we share more inspiring journeys from the SIT community.
 
 #FacesOfSIT
 
-Read more
-
 @singaporetech4 days ago
-
-Share
 
 singaporetech
 
@@ -286,11 +279,7 @@ IYKYK, if not — time to find out more via the link in bio.
 
 #SITADM2025
 
-Read more
-
 @singaporetech5 days ago
-
-Share
 
 singaporetech
 
@@ -304,11 +293,7 @@ To uncover why SIT is the right choice for you, visit the link in bio.
 
 #SITADM25
 
-Read more
-
 @singaporetech1 week ago
-
-Share
 
 singaporetech
 
@@ -322,11 +307,7 @@ Want to follow in Darren’s footsteps? SIT’s unique approach to applied learn
 
 #SITADM2025
 
-Read more
-
 @singaporetech1 week ago
-
-Share
 
 singaporetech
 
@@ -336,11 +317,7 @@ Our judges will be looking for authentic performances and a genuine connection t
 
 Sign up by Friday, 23 May 2025 at the link in bio!
 
-Read more
-
 @singaporetech1 week ago
-
-Share
 
 singaporetech
 
@@ -354,11 +331,7 @@ From the high-stakes urgency of emergency response to the holistic care of nursi
 
 #SITADM2025
 
-Read more
-
 @singaporetech1 week ago
-
-Share
 
 singaporetech
 
@@ -370,11 +343,7 @@ Want to know more about why you should choose SIT? Visit the link in bio.
 
 #SITADM25
 
-Read more
-
 @singaporetech1 week ago
-
-Share
 
 singaporetech
 
@@ -382,11 +351,7 @@ Fact or Myth? Lab Safety Edition!
 
 Lab safety isn’t guesswork – it’s a must! Watch as our SITizens tackle common myths and uncover the facts to stay safe in the lab.
 
-Read more
-
 @singaporetech1 week ago
-
-Share
 
 singaporetech
 
@@ -406,11 +371,7 @@ Find your path at the link in bio!
 
 #SITADM25
 
-Read more
-
 @singaporetech1 week ago
-
-Share
 
 singaporetech
 
@@ -424,11 +385,7 @@ This is innovation in action: where engineering meets entrepreneurship, and idea
 
 #SITADM25
 
-Read more
-
 @singaporetech1 week ago
-
-Share
 
 singaporetech
 
@@ -440,11 +397,7 @@ SIT's Integrated Work Study Programme (IWSP) transforms students into industry-r
 
 IWSP isn't just another internship — it's where classroom knowledge meets real-world application, creating confident professionals ready to contribute from day one.
 
-Read more
-
 @singaporetech1 week ago
-
-Share
 
 singaporetech
 
@@ -452,11 +405,7 @@ Wishing all who celebrate a joyful and meaningful Vesak Day! 🪷
 
 May this Vesak Day be a time of reflection, compassion, and peace both within and around you.
 
-Read more
-
 @singaporetech2 weeks ago
-
-Share
 
 singaporetech
 
@@ -464,11 +413,7 @@ Because saying “I love you, Mum” never gets old. 🥹 Whether it’s a heart
 
 Happy Mother’s Day!
 
-Read more
-
 @singaporetech2 weeks ago
-
-Share
 
 singaporetech
 
@@ -490,11 +435,7 @@ To mothers walking similar paths: your quiet strength moves mountains. Your jour
 
 Happy Mother's Day to all who mother beyond boundaries, with extraordinary love.
 
-Read more
-
 @singaporetech2 weeks ago
-
-Share
 
 singaporetech
 
@@ -510,11 +451,7 @@ Thinking of turning your ideas into reality? Discover how SIT’s hands-on appro
 
 #SITADM25
 
-Read more
-
 @singaporetech2 weeks ago
-
-Share
 
 singaporetech
 
@@ -536,11 +473,7 @@ From CIA Singapore and SIT to the world stage, Bernadette’s journey is stuffed
 
 Who knew cabbage could look this good? Savour Bernadette's full story at the link in bio.
 
-Read more
-
 @singaporetech2 weeks ago
-
-Share
 
 singaporetech
 
@@ -548,11 +481,7 @@ Tell us you’re back from your trimester break… without telling us you’re b
 
 The energy is high, the chaos is real, and campus life is officially back in session.
 
-Read more
-
 @singaporetech2 weeks ago
-
-Share
 
 singaporetech
 
@@ -562,11 +491,7 @@ Hey SITizens! Welcome to our new home at the SIT Punggol Campus. As you begin yo
 
 Let’s get to know our neighbours, make the most of the easy access to the surrounding companies right in the heart of Singapore’s first smart district, the Punggol Digital District, developed by @jtc\_sg . Let’s make SIT Punggol Campus buzz with energy, ideas, and loads of SIT spirit!
 
-Read more
-
 @singaporetech3 weeks ago
-
-Share
 
 singaporetech
 
@@ -576,11 +501,7 @@ Jedi wisdom… or student life in disguise? 👀
 
 May the 4th be with you.
 
-Read more
-
 @singaporetech3 weeks ago
-
-Share
 
 singaporetech
 
@@ -592,11 +513,7 @@ From an AI Debater app that leverages LLMs and speech technologies to simulate l
 
 Big thanks to everyone who joined us — let’s keep pushing the boundaries in AI together! 💬🤖
 
-Read more
-
 @singaporetech3 weeks ago
-
-Share
 
 singaporetech
 
@@ -604,16 +521,12 @@ Gearing up for your IWSP? Here’s a quick tip: Some things are better left prof
 
 Swipe to see how to turn those spicy thoughts into polished replies that still get the message across. Because it’s not what you say, it’s how you say it.
 
-Read more
-
 @singaporetech3 weeks ago
-
-Share
 
 Powered by Curator.io
 
-[Admissions AY2025\\
-\\
+[Admissions AY2025\
+\
 **Apply Now!**](https://learner.singaporetech.edu.sg/)
 
 |     |     |
