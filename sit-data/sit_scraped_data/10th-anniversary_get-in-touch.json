@@ -1,0 +1,54 @@
+{
+  "url": "https://www.singaporetech.edu.sg/10th-anniversary/get-in-touch",
+  "title": "Get in Touch | SIT 10th Anniversary",
+  "meta": {
+    "description": null,
+    "keywords": null
+  },
+  "text_lines": [
+    "JavaScript is off. Please enable to view full site.",
+    "JavaScript is off. Please enable to view full site.",
+    "Home",
+    "our story",
+    "celebrations",
+    "Contact",
+    "Home",
+    "our story",
+    "celebrations",
+    "Contact",
+    "Get in touch",
+    "If you have questions about our journey, want to reminisce about a special moment, or simply want to send your well wishes, we want to hear from you!",
+    "Please take a moment to fill out the form below, and we'll get back to you as soon as possible. Your feedback and support mean the world to us as we commemorate this special milestone together.",
+    "Full name",
+    "Email",
+    "Message",
+    "Personal Data Consent",
+    "I understand and consent that any personal data, including but not limited to my name, NRIC number and/or personal email address, that I provide SIT may be used, collected, retained and managed in accordance with SIT's Personal Data Protection Policy (PDPP) and in the manner listed in",
+    "PDPP",
+    ".",
+    "Submit",
+    "{\"path\":{\"baseUrl\":\"\\/10th-anniversary\\/\",\"pathPrefix\":\"\",\"currentPath\":\"webform\\/get_in_touch\",\"currentPathIsAdmin\":false,\"isFront\":false,\"currentLanguage\":\"en\"},\"pluralDelimiter\":\"\\u0003\",\"suppressDeprecationErrors\":true,\"ajaxTrustedUrl\":{\"form_action_p_pvdeGsVG5zNF_XLGPTvYSKCf43t8qZYSwcfZl2uzM\":true},\"user\":{\"uid\":0,\"permissionsHash\":\"a9079e72c71dbe766c82a42d490f2eed36efcf2ac1e1543b362c0cbe222f5c9e\"}}"
+  ],
+  "desc_divs": [],
+  "article_texts": [],
+  "links": [
+    "https://www.singaporetech.edu.sg/10th-anniversary/",
+    "https://www.singaporetech.edu.sg/10th-anniversary/",
+    "https://www.singaporetech.edu.sg/10th-anniversary/our-story",
+    "https://www.singaporetech.edu.sg/10th-anniversary/celebrations",
+    "https://www.singaporetech.edu.sg/10th-anniversary/get-in-touch",
+    "https://www.singaporetech.edu.sg/10th-anniversary/",
+    "https://www.singaporetech.edu.sg/10th-anniversary/our-story",
+    "https://www.singaporetech.edu.sg/10th-anniversary/celebrations",
+    "https://www.singaporetech.edu.sg/10th-anniversary/get-in-touch",
+    "https://urldefense.com/v3/__https://www.singaporetech.edu.sg/privacy-policy__;!!B_TIGtn8b3w!l6dDA-YvuhS54sX4uCfHOU0aBwmx4aKFFQCBz2L8_UP53Y2YcCWBh7TMEOsDKiRv4iFCauIXZxda-8Vemct-5WoueMJZbr8K$"
+  ],
+  "images": [
+    "/sites/anniversary/themes/custom/anniversary/assets/images/background-element-top-left.svg",
+    "/sites/anniversary/themes/custom/anniversary/assets/images/background-element-top-right.svg",
+    "/sites/anniversary/themes/custom/anniversary/assets/images/background-element-bottom-right.svg",
+    "/sites/anniversary/themes/custom/anniversary/assets/images/background-element-bottom-left.svg",
+    "/sites/anniversary/themes/custom/anniversary/sit-10-year-logo.svg",
+    "/sites/anniversary/themes/custom/anniversary/assets/images/sit-logo.svg"
+  ]
+}
