@@ -13,7 +13,7 @@ app.post('/api/tts', async (req, res) => {
     console.log(`[DEBUG] Using clean_tts.py to filter and process text`);
     const options = {
       scriptPath: path.join(__dirname, '../app'),
-      pythonPath: 'C:\\Users\\Akshat\\AppData\\Local\\Programs\\Python\\Python312\\python.exe',
+      // pythonPath: 'C:\\Users\\Akshat\\AppData\\Local\\Programs\\Python\\Python312\\python.exe',
       pythonOptions: ['-u'],
       args: [text, voiceId]
     };
