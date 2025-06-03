@@ -1,0 +1,62 @@
+/* Avatar Card */
+.avatar-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 1.5rem;
+    box-shadow: 
+        0 25px 50px -12px rgba(0, 94, 184, 0.25), 
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: transform 0.3s ease;
+    height: 100%;
+}
+
+.avatar-card:hover {
+    transform: translateY(-2px) scale(1.02);
+}
+
+.avatar-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Otter Avatar Styles */
+.otter-avatar {
+    width: 320px;
+    height: 320px;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .chat-container {
+        padding: 1rem;
+    }
+    
+    .chat-interface {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        height: auto;
+    }
+    
+    .avatar-svg {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .chat-card, .avatar-card {
+        padding: 1rem;
+    }
+    
+    .avatar-wrapper {
+        min-height: 350px;
+    }
+}

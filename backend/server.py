@@ -24,6 +24,7 @@ app.add_middleware(
 # API routes should be defined before static file handling
 @app.get("/api/signed-url")
 async def get_signed_url():
+    # Use SIT otter assistant agent ID
     agent_id = os.getenv("AGENT_ID")
     xi_api_key = os.getenv("XI_API_KEY")
     
