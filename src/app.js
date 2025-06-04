@@ -268,70 +268,8 @@ function showError(message) {
 }
 
 async function initializeConversation() {
-    try {
-        const signedUrl = await getSignedUrl();
-        conversation = await Conversation.startSession({
-            signedUrl,
-            onConnect: () => {
-                console.log('[Frontend] Conversation connected');
-                updateStatus(true);
-                setInputEnabled(true);
-            },
-            onDisconnect: () => {
-                console.log('[Frontend] Conversation disconnected');
-                updateStatus(false);
-                setInputEnabled(false);
-            },
-            onError: (error) => {
-                console.error('[Frontend] Conversation error:', error);
-                showError('Connection error. Please refresh.');
-                setInputEnabled(false);
-            },
-            onMessage: (msg) => {
-                console.log('[Frontend] Conversation message:', msg);
-                if (msg && typeof msg === 'object') {
-                    Object.keys(msg).forEach(key => {
-                        console.log(`[Frontend] msg key: ${key}, value:`, msg[key]);
-                    });
-                }
-                // Handle ElevenLabs SDK v2 message structure
-                if (msg.type === 'bot_utterance') {
-                    console.log('[Frontend] Adding bot_utterance to chat:', msg.text);
-                    addMessageToChat(msg.text, 'bot');
-                    setInputEnabled(true);
-                } else if (msg.type === 'transcript' || msg.type === 'user_transcript') {
-                    console.log('[Frontend] Adding user transcript to chat:', msg.text);
-                    if (msg.text) {
-                        addMessageToChat(msg.text, 'user');
-                    }
-                } else if (msg.type === 'tts' && msg.text) {
-                    console.log('[Frontend] Adding TTS to chat:', msg.text);
-                    addMessageToChat(msg.text, 'bot');
-                } else if (msg.source === 'ai' && msg.message) {
-                    // New SDK: bot reply
-                    console.log('[Frontend] Adding AI message to chat:', msg.message);
-                    addMessageToChat(msg.message, 'bot');
-                } else if (msg.source === 'user' && msg.message) {
-                    // New SDK: user transcript
-                    console.log('[Frontend] Adding user message to chat:', msg.message);
-                    addMessageToChat(msg.message, 'user');
-                } else if (msg.text && !(msg.type === 'user_transcript' || msg.type === 'transcript')) {
-                    // Fallback: If message has text and is not a user transcript, treat as bot message
-                    console.log('[Frontend] Fallback: Adding message with text to chat as bot:', msg.text);
-                    addMessageToChat(msg.text, 'bot');
-                } else {
-                    console.log('[Frontend] Unhandled message type or structure:', msg);
-                }
-            },
-            onModeChange: (mode) => {
-                updateSpeakingStatus(mode);
-            }
-        });
-    } catch (error) {
-        console.error('[Frontend] Failed to connect to agent:', error);
-        showError('Failed to connect to agent.');
-        setInputEnabled(false);
-    }
+    // Do not auto-start conversation or voice session on page load
+    // Only set up the Conversation object when user clicks Start Conversation
 }
 
 async function startConversation() {
@@ -376,8 +314,43 @@ async function startConversation() {
                 endButton.style.display = 'none';
                 alert('An error occurred during the conversation.');
             },
+            onMessage: (msg) => {
+                console.log('[Frontend] Conversation message:', msg);
+                if (msg && typeof msg === 'object') {
+                    Object.keys(msg).forEach(key => {
+                        console.log(`[Frontend] msg key: ${key}, value:`, msg[key]);
+                    });
+                }
+                // Handle ElevenLabs SDK v2 message structure
+                if (msg.type === 'bot_utterance') {
+                    console.log('[Frontend] Adding bot_utterance to chat:', msg.text);
+                    addMessageToChat(msg.text, 'bot');
+                    setInputEnabled(true);
+                } else if (msg.type === 'transcript' || msg.type === 'user_transcript') {
+                    console.log('[Frontend] Adding user transcript to chat:', msg.text);
+                    if (msg.text) {
+                        addMessageToChat(msg.text, 'user');
+                    }
+                } else if (msg.type === 'tts' && msg.text) {
+                    console.log('[Frontend] Adding TTS to chat:', msg.text);
+                    addMessageToChat(msg.text, 'bot');
+                } else if (msg.source === 'ai' && msg.message) {
+                    // New SDK: bot reply
+                    console.log('[Frontend] Adding AI message to chat:', msg.message);
+                    addMessageToChat(msg.message, 'bot');
+                } else if (msg.source === 'user' && msg.message) {
+                    // New SDK: user transcript
+                    console.log('[Frontend] Adding user message to chat:', msg.message);
+                    addMessageToChat(msg.message, 'user');
+                } else if (msg.text && !(msg.type === 'user_transcript' || msg.type === 'transcript')) {
+                    // Fallback: If message has text and is not a user transcript, treat as bot message
+                    console.log('[Frontend] Fallback: Adding message with text to chat as bot:', msg.text);
+                    addMessageToChat(msg.text, 'bot');
+                } else {
+                    console.log('[Frontend] Unhandled message type or structure:', msg);
+                }
+            },
             onModeChange: (mode) => {
-                console.log('Mode changed:', mode);
                 updateSpeakingStatus(mode);
             }
         });
@@ -401,7 +374,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateStatus(false);
     updateSpeakingStatus({ mode: 'silent' });
     setupChatInterface();
-    await initializeConversation();
 
     const startButton = document.getElementById('startButton');
     const endButton = document.getElementById('endButton');
