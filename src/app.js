@@ -162,22 +162,29 @@ async function requestMicrophonePermission() {
     }
 }
 
+// Add debugging logs for frontend API calls and WebSocket events
 async function getSignedUrl(opponent) {
     try {
         const url = opponent ? `/api/signed-url?opponent=${opponent}` : '/api/signed-url';
+        console.log('[Frontend] Fetching signed URL from:', url);
         const response = await fetch(url);
+        console.log('[Frontend] Signed URL response status:', response.status);
         if (!response.ok) throw new Error('Failed to get signed URL');
         const data = await response.json();
+        console.log('[Frontend] Signed URL data:', data);
         return data.signedUrl;
     } catch (error) {
-        console.error('Error getting signed URL:', error);
+        console.error('[Frontend] Error getting signed URL:', error);
         throw error;
     }
 }
 
 async function getAgentId() {
+    console.log('[Frontend] Fetching agent ID...');
     const response = await fetch('/api/getAgentId');
+    console.log('[Frontend] Agent ID response status:', response.status);
     const { agentId } = await response.json();
+    console.log('[Frontend] Received agentId:', agentId);
     return agentId;
 }
 
@@ -237,6 +244,7 @@ async function sendMessage() {
     const chatInput = document.getElementById('userInput');
     const message = chatInput.value.trim();
     if (!message) return;
+    console.log('[Frontend] Sending message:', message);
     addMessageToChat(message, 'user');
     chatInput.value = '';
     setInputEnabled(false);
@@ -245,7 +253,9 @@ async function sendMessage() {
             type: 'user_utterance',
             text: message
         }));
+        console.log('[Frontend] Message sent to WebSocket:', message);
     } else {
+        console.error('[Frontend] Not connected to the agent.');
         showError('Not connected to the agent. Please refresh.');
         setInputEnabled(true);
     }
@@ -282,16 +292,20 @@ function showError(message) {
 async function initializeConversation() {
     try {
         const signedUrl = await getSignedUrl();
+        console.log('[Frontend] Connecting WebSocket to:', signedUrl);
         conversation = new WebSocket(signedUrl);
         conversation.onopen = () => {
+            console.log('[Frontend] WebSocket connection opened');
             updateStatus(true);
             setInputEnabled(true);
         };
         conversation.onclose = () => {
+            console.log('[Frontend] WebSocket connection closed');
             updateStatus(false);
             setInputEnabled(false);
         };
         conversation.onerror = (e) => {
+            console.error('[Frontend] WebSocket error:', e);
             updateStatus(false);
             showError('Connection error. Please refresh.');
         };
@@ -300,8 +314,10 @@ async function initializeConversation() {
             try {
                 data = JSON.parse(event.data);
             } catch (e) {
+                console.error('[Frontend] Error parsing WebSocket message:', event.data);
                 return;
             }
+            console.log('[Frontend] WebSocket message received:', data);
             if (data.type === 'bot_utterance') {
                 addMessageToChat(data.text, 'bot');
                 setInputEnabled(true);
@@ -310,6 +326,7 @@ async function initializeConversation() {
             }
         };
     } catch (error) {
+        console.error('[Frontend] Failed to connect to agent:', error);
         showError('Failed to connect to agent.');
         setInputEnabled(false);
     }
