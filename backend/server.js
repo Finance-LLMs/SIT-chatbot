@@ -8,7 +8,7 @@ dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use("/static", express.static(path.join(__dirname, "../dist")));
+app.use("/static", express.static(path.join(__dirname, "../src")));
 
 app.get("/api/signed-url", async (req, res) => {
   try {
@@ -46,7 +46,7 @@ app.get("/api/getAgentId", (req, res) => {
 
 // Serve index.html for all other routes
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../dist/index.html"));
+  res.sendFile(path.join(__dirname, "../src/index.html"));
 });
 
 const PORT = process.env.PORT || 3000;
