@@ -8,7 +8,7 @@ dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use("/static", express.static(path.join(__dirname, "../src")));
+app.use("/static", express.static(path.join(__dirname, "../dist")));
 
 // Add debugging logs for incoming requests and outgoing responses
 app.use((req, res, next) => {
@@ -54,7 +54,7 @@ app.get("/api/getAgentId", (req, res) => {
 // Serve index.html for all other routes
 app.get("*", (req, res) => {
   console.log("Serving index.html for route:", req.url);
-  res.sendFile(path.join(__dirname, "../src/index.html"));
+  res.sendFile(path.join(__dirname, "../dist/index.html"));
 });
 
 const PORT = process.env.PORT || 3000;

@@ -1,5 +1,5 @@
 // --- src/app.js ---
-// Direct script reference - no import needed here
+import { Conversation } from '@11labs/client';
 
 let conversation = null;
 let mouthAnimationInterval = null;
@@ -162,10 +162,10 @@ async function requestMicrophonePermission() {
     }
 }
 
-// Add debugging logs for frontend API calls and WebSocket events
-async function getSignedUrl(opponent) {
+// Add debugging logs for frontend API calls
+async function getSignedUrl() {
     try {
-        const url = opponent ? `/api/signed-url?opponent=${opponent}` : '/api/signed-url';
+        const url = '/api/signed-url';
         console.log('[Frontend] Fetching signed URL from:', url);
         const response = await fetch(url);
         console.log('[Frontend] Signed URL response status:', response.status);
@@ -179,15 +179,6 @@ async function getSignedUrl(opponent) {
     }
 }
 
-async function getAgentId() {
-    console.log('[Frontend] Fetching agent ID...');
-    const response = await fetch('/api/getAgentId');
-    console.log('[Frontend] Agent ID response status:', response.status);
-    const { agentId } = await response.json();
-    console.log('[Frontend] Received agentId:', agentId);
-    return agentId;
-}
-
 function updateStatus(isConnected) {
     const statusElement = document.getElementById('connectionStatus');
     statusElement.textContent = isConnected ? 'Connected' : 'Disconnected';
@@ -196,20 +187,18 @@ function updateStatus(isConnected) {
 
 function updateSpeakingStatus(mode) {
     const statusElement = document.getElementById('speakingStatus');
-    // Update based on the exact mode string we receive
     const isSpeaking = mode && mode.mode === 'speaking';
     statusElement.textContent = isSpeaking ? 'Agent Speaking' : 'Agent Silent';
     statusElement.classList.toggle('speaking', isSpeaking);
     statusElement.classList.remove('hidden');
-    // Animate avatar based on speaking state
     if (isSpeaking) {
         startMouthAnimation();
     } else {
         stopMouthAnimation();
     }
+    console.log('[Frontend] Speaking status updated:', { mode, isSpeaking });
 }
 
-// Function to disable/enable form controls
 function setFormControlsState(disabled) {
     const userInput = document.getElementById('userInput');
     const sendButton = document.getElementById('sendButton');
@@ -219,27 +208,22 @@ function setFormControlsState(disabled) {
     if (voiceButton) voiceButton.disabled = disabled;
 }
 
-// Set up the chat interface
 function setupChatInterface() {
     const chatInput = document.getElementById('userInput');
     const sendButton = document.getElementById('sendButton');
     const voiceButton = document.getElementById('voiceButton');
-    // Initialize the avatar
     initializeAvatar();
-    // Send message when Send button is clicked
     sendButton.addEventListener('click', () => {
         sendMessage();
     });
-    // Send message when Enter key is pressed
     chatInput.addEventListener('keypress', (event) => {
         if (event.key === 'Enter') {
             sendMessage();
         }
     });
-    // Voice button handled in setupEventHandlers
+    // Voice handled in setupEventHandlers
 }
 
-// Function to send a message
 async function sendMessage() {
     const chatInput = document.getElementById('userInput');
     const message = chatInput.value.trim();
@@ -248,20 +232,21 @@ async function sendMessage() {
     addMessageToChat(message, 'user');
     chatInput.value = '';
     setInputEnabled(false);
-    if (conversation && conversation.readyState === WebSocket.OPEN) {
-        conversation.send(JSON.stringify({
-            type: 'user_utterance',
-            text: message
-        }));
-        console.log('[Frontend] Message sent to WebSocket:', message);
+    if (conversation) {
+        try {
+            await conversation.sendText(message);
+            console.log('[Frontend] Message sent to Conversation SDK:', message);
+        } catch (err) {
+            console.error('[Frontend] Error sending message to Conversation SDK:', err);
+            showError('Failed to send message.');
+            setInputEnabled(true);
+        }
     } else {
-        console.error('[Frontend] Not connected to the agent.');
         showError('Not connected to the agent. Please refresh.');
         setInputEnabled(true);
     }
 }
 
-// Add a message to the chat area
 function addMessageToChat(message, sender) {
     const chatMessages = document.getElementById('chatMessages');
     const messageElement = document.createElement('div');
@@ -278,53 +263,45 @@ function addMessageToChat(message, sender) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-// Enable/disable input controls
 function setInputEnabled(enabled) {
     setFormControlsState(!enabled);
 }
 
-// Show error message
 function showError(message) {
     addMessageToChat(message, 'bot');
 }
 
-// Initialize conversation with ElevenLabs
 async function initializeConversation() {
     try {
         const signedUrl = await getSignedUrl();
-        console.log('[Frontend] Connecting WebSocket to:', signedUrl);
-        conversation = new WebSocket(signedUrl);
-        conversation.onopen = () => {
-            console.log('[Frontend] WebSocket connection opened');
-            updateStatus(true);
-            setInputEnabled(true);
-        };
-        conversation.onclose = () => {
-            console.log('[Frontend] WebSocket connection closed');
-            updateStatus(false);
-            setInputEnabled(false);
-        };
-        conversation.onerror = (e) => {
-            console.error('[Frontend] WebSocket error:', e);
-            updateStatus(false);
-            showError('Connection error. Please refresh.');
-        };
-        conversation.onmessage = (event) => {
-            let data;
-            try {
-                data = JSON.parse(event.data);
-            } catch (e) {
-                console.error('[Frontend] Error parsing WebSocket message:', event.data);
-                return;
-            }
-            console.log('[Frontend] WebSocket message received:', data);
-            if (data.type === 'bot_utterance') {
-                addMessageToChat(data.text, 'bot');
+        conversation = await Conversation.startSession({
+            signedUrl,
+            onConnect: () => {
+                console.log('[Frontend] Conversation connected');
+                updateStatus(true);
                 setInputEnabled(true);
-            } else if (data.type === 'speaking_status') {
-                updateSpeakingStatus(data);
+            },
+            onDisconnect: () => {
+                console.log('[Frontend] Conversation disconnected');
+                updateStatus(false);
+                setInputEnabled(false);
+            },
+            onError: (error) => {
+                console.error('[Frontend] Conversation error:', error);
+                showError('Connection error. Please refresh.');
+                setInputEnabled(false);
+            },
+            onMessage: (msg) => {
+                console.log('[Frontend] Conversation message:', msg);
+                if (msg.type === 'bot_utterance') {
+                    addMessageToChat(msg.text, 'bot');
+                    setInputEnabled(true);
+                }
+            },
+            onModeChange: (mode) => {
+                updateSpeakingStatus(mode);
             }
-        };
+        });
     } catch (error) {
         console.error('[Frontend] Failed to connect to agent:', error);
         showError('Failed to connect to agent.');
@@ -333,102 +310,44 @@ async function initializeConversation() {
 }
 
 function setupEventHandlers() {
-    // Handle voice button for recording and streaming
+    // Voice button triggers SDK's start/stop voice
     const voiceButton = document.getElementById('voiceButton');
     let isRecording = false;
-    let mediaRecorder = null;
-    let audioStream = null;
-
     voiceButton.addEventListener('click', async () => {
+        if (!conversation) {
+            showError('Not connected to the agent. Please refresh.');
+            return;
+        }
         if (!isRecording) {
-            // Start recording
-            console.log('[Voice] Requesting microphone permission...');
             try {
-                audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(audioStream, { mimeType: 'audio/webm' });
+                await conversation.startVoice();
                 isRecording = true;
                 voiceButton.classList.add('loading');
                 voiceButton.disabled = true;
                 showError('Listening... Speak now!');
-                let audioChunks = [];
-                mediaRecorder.ondataavailable = (event) => {
-                    if (event.data.size > 0) {
-                        audioChunks.push(event.data);
-                        // Send audio chunk to WebSocket if open
-                        if (conversation && conversation.readyState === WebSocket.OPEN) {
-                            event.data.arrayBuffer().then(buffer => {
-                                // ElevenLabs expects binary audio data
-                                conversation.send(buffer);
-                                console.log('[Voice] Sent audio chunk to WebSocket:', buffer.byteLength, 'bytes');
-                            });
-                        }
-                    }
-                };
-                mediaRecorder.onstart = () => {
-                    console.log('[Voice] MediaRecorder started');
-                };
-                mediaRecorder.onstop = () => {
-                    console.log('[Voice] MediaRecorder stopped');
-                    voiceButton.classList.remove('loading');
-                    voiceButton.disabled = false;
-                    isRecording = false;
-                    if (audioStream) {
-                        audioStream.getTracks().forEach(track => track.stop());
-                        audioStream = null;
-                    }
-                };
-                mediaRecorder.start(250); // Send audio every 250ms
-                // Stop after 5 seconds or when button is clicked again
+                console.log('[Frontend] Voice recording started via SDK');
+            } catch (err) {
+                console.error('[Frontend] Error starting voice:', err);
+                showError('Microphone access denied or not available.');
+            } finally {
                 setTimeout(() => {
-                    if (isRecording && mediaRecorder && mediaRecorder.state !== 'inactive') {
-                        mediaRecorder.stop();
+                    if (isRecording) {
+                        conversation.stopVoice();
+                        isRecording = false;
+                        voiceButton.classList.remove('loading');
+                        voiceButton.disabled = false;
+                        console.log('[Frontend] Voice recording stopped via SDK (timeout)');
                     }
                 }, 5000);
-            } catch (err) {
-                console.error('[Voice] Microphone error:', err);
-                showError('Microphone access denied or not available.');
-                voiceButton.classList.remove('loading');
-                voiceButton.disabled = false;
             }
         } else {
-            // Stop recording
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-            }
+            conversation.stopVoice();
+            isRecording = false;
+            voiceButton.classList.remove('loading');
+            voiceButton.disabled = false;
+            console.log('[Frontend] Voice recording stopped via SDK (manual)');
         }
     });
-
-    // Play audio received from the agent
-    if (conversation) {
-        conversation.onmessage = (event) => {
-            let data;
-            try {
-                // Try to parse as JSON, fallback to binary
-                data = JSON.parse(event.data);
-                console.log('[Frontend] WebSocket message received:', data);
-                if (data.type === 'bot_utterance') {
-                    addMessageToChat(data.text, 'bot');
-                    setInputEnabled(true);
-                } else if (data.type === 'speaking_status') {
-                    updateSpeakingStatus(data);
-                }
-            } catch (e) {
-                // If not JSON, treat as audio
-                if (event.data instanceof Blob) {
-                    console.log('[Voice] Received audio blob from WebSocket:', event.data);
-                    const audioUrl = URL.createObjectURL(event.data);
-                    const audio = new Audio(audioUrl);
-                    audio.play().then(() => {
-                        console.log('[Voice] Playing received audio');
-                    }).catch(err => {
-                        console.error('[Voice] Error playing audio:', err);
-                    });
-                } else {
-                    console.warn('[Voice] Received unknown WebSocket data:', event.data);
-                }
-            }
-        };
-    }
 }
 
 // Initialize when the DOM is fully loaded
