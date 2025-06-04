@@ -1,5 +1,6 @@
 // --- src/app.js ---
-import { Conversation } from '@elevenlabs/client';
+// Using global ElevenLabs SDK instead of ES module import
+// The script is included in index.html
 
 let conversation = null;
 let mouthAnimationInterval = null;
@@ -200,9 +201,8 @@ async function initializeConversation() {
         // Get the agent ID from the server
         const response = await fetch('/api/signed-url');
         const data = await response.json();
-        
-        // Initialize the conversation
-        conversation = new Conversation(data.signedUrl);
+          // Initialize the conversation using global ElevenLabs object
+        conversation = new ElevenLabs.Conversation(data.signedUrl);
         
         // Set up event listeners for the conversation
         conversation.on('connected', handleConnected);
@@ -326,8 +326,4 @@ function stopMouthAnimation() {
         currentMouthState = 'M130,170 Q150,175 170,170';
         mouthElement.setAttribute('d', currentMouthState);
     }
-}
-
-function showError(message) {
-    alert(message);
 }
