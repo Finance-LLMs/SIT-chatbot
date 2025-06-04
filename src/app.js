@@ -207,17 +207,8 @@ function setFormControlsState(disabled) {
 }
 
 function setupChatInterface() {
-    const chatInput = document.getElementById('userInput');
-    const sendButton = document.getElementById('sendButton');
+    // No text input or send button to wire up
     initializeAvatar();
-    sendButton.addEventListener('click', () => {
-        sendMessage();
-    });
-    chatInput.addEventListener('keypress', (event) => {
-        if (event.key === 'Enter') {
-            sendMessage();
-        }
-    });
 }
 
 async function sendMessage() {
@@ -374,7 +365,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateStatus(false);
     updateSpeakingStatus({ mode: 'silent' });
     setupChatInterface();
-
+    // Do not call initializeConversation here
     const startButton = document.getElementById('startButton');
     const endButton = document.getElementById('endButton');
     if (startButton && endButton) {
