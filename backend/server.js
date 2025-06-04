@@ -1,31 +1,17 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import { fileURLToPath } from 'url';
-import path from "path";
-
-// ES modules fix for __dirname
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const path = require("path");
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use("/static", express.static(path.join(__dirname, "../static")));
-app.use(express.static(path.join(__dirname, "../src")));
-
-// Set headers for all responses
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
+app.use("/static", express.static(path.join(__dirname, "../src")));
 
 app.get("/api/signed-url", async (req, res) => {
   try {
-    // Use default SIT otter agent ID
     let agentId = process.env.AGENT_ID; // Default agent
     
     const response = await fetch(
@@ -60,9 +46,7 @@ app.get("/api/getAgentId", (req, res) => {
 
 // Serve index.html for all other routes
 app.get("*", (req, res) => {
-  const indexPath = path.join(__dirname, "../src/index.html");
-  console.log(`Serving index.html from: ${indexPath}`);
-  res.sendFile(indexPath);
+  res.sendFile(path.join(__dirname, "../src/index.html"));
 });
 
 const PORT = process.env.PORT || 3000;
