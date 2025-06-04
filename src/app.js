@@ -202,16 +202,13 @@ function updateSpeakingStatus(mode) {
 function setFormControlsState(disabled) {
     const userInput = document.getElementById('userInput');
     const sendButton = document.getElementById('sendButton');
-    const voiceButton = document.getElementById('voiceButton');
     if (userInput) userInput.disabled = disabled;
     if (sendButton) sendButton.disabled = disabled;
-    if (voiceButton) voiceButton.disabled = disabled;
 }
 
 function setupChatInterface() {
     const chatInput = document.getElementById('userInput');
     const sendButton = document.getElementById('sendButton');
-    const voiceButton = document.getElementById('voiceButton');
     initializeAvatar();
     sendButton.addEventListener('click', () => {
         sendMessage();
@@ -221,7 +218,6 @@ function setupChatInterface() {
             sendMessage();
         }
     });
-    // Voice handled in setupEventHandlers
 }
 
 async function sendMessage() {
@@ -309,45 +305,66 @@ async function initializeConversation() {
     }
 }
 
-function setupEventHandlers() {
-    // Voice button triggers SDK's start/stop voice
-    const voiceButton = document.getElementById('voiceButton');
-    let isRecording = false;
-    voiceButton.addEventListener('click', async () => {
-        if (!conversation) {
-            showError('Not connected to the agent. Please refresh.');
+async function startConversation() {
+    const startButton = document.getElementById('startButton');
+    const endButton = document.getElementById('endButton');
+    try {
+        startButton.disabled = true;
+        const hasPermission = await requestMicrophonePermission();
+        if (!hasPermission) {
+            alert('Microphone permission is required for the conversation.');
+            startButton.disabled = false;
             return;
         }
-        if (!isRecording) {
-            try {
-                await conversation.startVoice();
-                isRecording = true;
-                voiceButton.classList.add('loading');
-                voiceButton.disabled = true;
-                showError('Listening... Speak now!');
-                console.log('[Frontend] Voice recording started via SDK');
-            } catch (err) {
-                console.error('[Frontend] Error starting voice:', err);
-                showError('Microphone access denied or not available.');
-            } finally {
-                setTimeout(() => {
-                    if (isRecording) {
-                        conversation.stopVoice();
-                        isRecording = false;
-                        voiceButton.classList.remove('loading');
-                        voiceButton.disabled = false;
-                        console.log('[Frontend] Voice recording stopped via SDK (timeout)');
-                    }
-                }, 5000);
+        const signedUrl = await getSignedUrl();
+        conversation = await Conversation.startSession({
+            signedUrl,
+            onConnect: () => {
+                console.log('Connected');
+                updateStatus(true);
+                setFormControlsState(true);
+                startButton.style.display = 'none';
+                endButton.disabled = false;
+                endButton.style.display = 'flex';
+            },
+            onDisconnect: () => {
+                console.log('Disconnected');
+                updateStatus(false);
+                setFormControlsState(false);
+                startButton.disabled = false;
+                startButton.style.display = 'flex';
+                endButton.disabled = true;
+                endButton.style.display = 'none';
+                updateSpeakingStatus({ mode: 'listening' });
+                stopMouthAnimation();
+            },
+            onError: (error) => {
+                console.error('Conversation error:', error);
+                setFormControlsState(false);
+                startButton.disabled = false;
+                startButton.style.display = 'flex';
+                endButton.disabled = true;
+                endButton.style.display = 'none';
+                alert('An error occurred during the conversation.');
+            },
+            onModeChange: (mode) => {
+                console.log('Mode changed:', mode);
+                updateSpeakingStatus(mode);
             }
-        } else {
-            conversation.stopVoice();
-            isRecording = false;
-            voiceButton.classList.remove('loading');
-            voiceButton.disabled = false;
-            console.log('[Frontend] Voice recording stopped via SDK (manual)');
-        }
-    });
+        });
+    } catch (error) {
+        console.error('Error starting conversation:', error);
+        setFormControlsState(false);
+        startButton.disabled = false;
+        alert('Failed to start conversation. Please try again.');
+    }
+}
+
+async function endConversation() {
+    if (conversation) {
+        await conversation.endSession();
+        conversation = null;
+    }
 }
 
 // Initialize when the DOM is fully loaded
@@ -355,6 +372,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateStatus(false);
     updateSpeakingStatus({ mode: 'silent' });
     setupChatInterface();
-    setupEventHandlers();
     await initializeConversation();
+
+    const startButton = document.getElementById('startButton');
+    const endButton = document.getElementById('endButton');
+    if (startButton && endButton) {
+        startButton.addEventListener('click', startConversation);
+        endButton.addEventListener('click', endConversation);
+        endButton.style.display = 'none';
+    }
 });
