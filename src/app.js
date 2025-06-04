@@ -333,11 +333,102 @@ async function initializeConversation() {
 }
 
 function setupEventHandlers() {
-    // Handle voice button for recording (placeholder, not implemented)
+    // Handle voice button for recording and streaming
     const voiceButton = document.getElementById('voiceButton');
+    let isRecording = false;
+    let mediaRecorder = null;
+    let audioStream = null;
+
     voiceButton.addEventListener('click', async () => {
-        showError('Voice input not implemented in this demo.');
+        if (!isRecording) {
+            // Start recording
+            console.log('[Voice] Requesting microphone permission...');
+            try {
+                audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(audioStream, { mimeType: 'audio/webm' });
+                isRecording = true;
+                voiceButton.classList.add('loading');
+                voiceButton.disabled = true;
+                showError('Listening... Speak now!');
+                let audioChunks = [];
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                        // Send audio chunk to WebSocket if open
+                        if (conversation && conversation.readyState === WebSocket.OPEN) {
+                            event.data.arrayBuffer().then(buffer => {
+                                // ElevenLabs expects binary audio data
+                                conversation.send(buffer);
+                                console.log('[Voice] Sent audio chunk to WebSocket:', buffer.byteLength, 'bytes');
+                            });
+                        }
+                    }
+                };
+                mediaRecorder.onstart = () => {
+                    console.log('[Voice] MediaRecorder started');
+                };
+                mediaRecorder.onstop = () => {
+                    console.log('[Voice] MediaRecorder stopped');
+                    voiceButton.classList.remove('loading');
+                    voiceButton.disabled = false;
+                    isRecording = false;
+                    if (audioStream) {
+                        audioStream.getTracks().forEach(track => track.stop());
+                        audioStream = null;
+                    }
+                };
+                mediaRecorder.start(250); // Send audio every 250ms
+                // Stop after 5 seconds or when button is clicked again
+                setTimeout(() => {
+                    if (isRecording && mediaRecorder && mediaRecorder.state !== 'inactive') {
+                        mediaRecorder.stop();
+                    }
+                }, 5000);
+            } catch (err) {
+                console.error('[Voice] Microphone error:', err);
+                showError('Microphone access denied or not available.');
+                voiceButton.classList.remove('loading');
+                voiceButton.disabled = false;
+            }
+        } else {
+            // Stop recording
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
+        }
     });
+
+    // Play audio received from the agent
+    if (conversation) {
+        conversation.onmessage = (event) => {
+            let data;
+            try {
+                // Try to parse as JSON, fallback to binary
+                data = JSON.parse(event.data);
+                console.log('[Frontend] WebSocket message received:', data);
+                if (data.type === 'bot_utterance') {
+                    addMessageToChat(data.text, 'bot');
+                    setInputEnabled(true);
+                } else if (data.type === 'speaking_status') {
+                    updateSpeakingStatus(data);
+                }
+            } catch (e) {
+                // If not JSON, treat as audio
+                if (event.data instanceof Blob) {
+                    console.log('[Voice] Received audio blob from WebSocket:', event.data);
+                    const audioUrl = URL.createObjectURL(event.data);
+                    const audio = new Audio(audioUrl);
+                    audio.play().then(() => {
+                        console.log('[Voice] Playing received audio');
+                    }).catch(err => {
+                        console.error('[Voice] Error playing audio:', err);
+                    });
+                } else {
+                    console.warn('[Voice] Received unknown WebSocket data:', event.data);
+                }
+            }
+        };
+    }
 }
 
 // Initialize when the DOM is fully loaded
