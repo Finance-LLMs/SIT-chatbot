@@ -23,11 +23,20 @@
 4. Run the script
 
     ```bash
-    npm start
+    npm run build
     ```
 
-5. Visit localhost
+5. Optional: PM2 to keep server running
+   
+    ```bash
+    npm install -g pm2
+    pm2 start backend/server.js --name sit-chatbot
+    pm2 startup
+    pm2 save
+    ```
+
+5. Visit hosted website
 
     ```bash
-    http://localhost:3000/
+    https://sit-chatbot.roamify.tech
     ```
