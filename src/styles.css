@@ -357,13 +357,13 @@ body::before {
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;
-    height: 60vh;  /* Reduced height using viewport height */
-    max-height: 400px;  /* Set a maximum height */
+    height: 75vh;  /* Increased from 60vh */
+    max-height: 500px;  /* Increased from 400px */
 }
 
 .avatar-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 32px 64px -12px rgba(255, 255, 255, 0.3);
 }
 
 .avatar-wrapper {
@@ -541,19 +541,31 @@ body::before {
         font-size: 1rem;
     }
     .avatar-svg, .otter-avatar, .celebrity-image {
-        width: 200px;  /* Increased from 180px */
-        height: 200px;  /* Increased from 180px */
-        min-width: 140px;  /* Increased from 120px */
-        min-height: 140px;  /* Increased from 120px */
+        width: 240px;  /* Increased from 200px */
+        height: 240px;  /* Increased from 200px */
+        min-width: 160px;  /* Increased from 140px */
+        min-height: 160px;  /* Increased from 140px */
         max-width: 90vw;
-        max-height: 30vh;  /* Reduced to save space */
+        max-height: 35vh;  /* Increased from 30vh */
     }
     .avatar-wrapper {
-        min-height: 25vh;  /* Reduced height significantly */
+        min-height: 35vh;  /* Increased from 25vh */
         border-radius: 10px;
         width: 100%;
         max-width: 100vw;
         box-sizing: border-box;
+    }
+    .avatar-card {
+        padding: 0.5rem;
+        min-height: 40vh;  /* Added specific height for mobile avatar card */
+        max-height: 45vh;  /* Added max height for mobile */
+        height: auto;
+        border-radius: 1rem;
+        box-shadow: 0 8px 24px -8px rgba(0,0,0,0.12);
+        width: 100%;
+        max-width: 100vw;
+        box-sizing: border-box;
+        margin: 0 auto 1rem auto;
     }
     .header-logo {
         margin-right: 0.5rem;
@@ -753,7 +765,7 @@ body::before {
     justify-content: center;
     position: relative;
     background: radial-gradient(circle at center, rgba(102, 126, 234, 0.05), transparent);
-    min-height: 80%;  /* Reduced from 90% */
+    min-height: 90%;  /* Increased from 80% */
     border-radius: 12px;
     overflow: hidden;
 }
@@ -789,8 +801,8 @@ body::before {
 
 /* Otter Avatar Styles */
 .otter-avatar {
-    width: 420px;  /* Increased from 380px */
-    height: 420px;  /* Increased from 380px */
+    width: 480px;  /* Increased from 420px */
+    height: 480px;  /* Increased from 420px */
     filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
 }
 
@@ -894,19 +906,31 @@ body::before {
         font-size: 1rem;
     }
     .avatar-svg, .otter-avatar, .celebrity-image {
-        width: 200px;  /* Increased from 180px */
-        height: 200px;  /* Increased from 180px */
-        min-width: 140px;  /* Increased from 120px */
-        min-height: 140px;  /* Increased from 120px */
+        width: 240px;  /* Increased from 200px */
+        height: 240px;  /* Increased from 200px */
+        min-width: 160px;  /* Increased from 140px */
+        min-height: 160px;  /* Increased from 140px */
         max-width: 90vw;
-        max-height: 30vh;  /* Reduced to save space */
+        max-height: 35vh;  /* Increased from 30vh */
     }
     .avatar-wrapper {
-        min-height: 25vh;  /* Reduced height significantly */
+        min-height: 35vh;  /* Increased from 25vh */
         border-radius: 10px;
         width: 100%;
         max-width: 100vw;
         box-sizing: border-box;
+    }
+    .avatar-card {
+        padding: 0.5rem;
+        min-height: 40vh;  /* Added specific height for mobile avatar card */
+        max-height: 45vh;  /* Added max height for mobile */
+        height: auto;
+        border-radius: 1rem;
+        box-shadow: 0 8px 24px -8px rgba(0,0,0,0.12);
+        width: 100%;
+        max-width: 100vw;
+        box-sizing: border-box;
+        margin: 0 auto 1rem auto;
     }
     .header-logo {
         margin-right: 0.5rem;
