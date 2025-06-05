@@ -67,22 +67,6 @@ function createAvatarSVG() {
     `;
 }
 
-// Create otter avatar
-function createAvatar() {
-    return `
-        <div class="celebrity-avatar-container">
-            <div class="default-avatar">
-                ${createAvatarSVG()}
-            </div>
-            <div class="speaking-indicator" id="speakingIndicator">
-                <div class="speaking-wave"></div>
-                <div class="speaking-wave"></div>
-                <div class="speaking-wave"></div>
-            </div>
-        </div>
-    `;
-}
-
 // Initialize avatar
 function initializeAvatar() {
     // Insert the otter avatar
@@ -98,7 +82,7 @@ function startMouthAnimation() {
     if (avatarWrapper) {
         avatarWrapper.classList.add('avatar-speaking');
         
-        // If it's a celebrity avatar, show the speaking indicator
+        // Show the speaking indicator
         const speakingIndicator = document.getElementById('speakingIndicator');
         if (speakingIndicator) {
             speakingIndicator.style.display = 'flex';
@@ -135,7 +119,7 @@ function stopMouthAnimation() {
     if (avatarWrapper) {
         avatarWrapper.classList.remove('avatar-speaking');
         
-        // Hide speaking indicator for celebrity avatars
+        // Hide speaking indicator
         const speakingIndicator = document.getElementById('speakingIndicator');
         if (speakingIndicator) {
             speakingIndicator.style.display = 'none';
