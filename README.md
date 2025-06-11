@@ -15,10 +15,7 @@ This project is a chatbot application designed for SIT, featuring a friendly ott
   * [Installation](#installation)
 * [Usage](#usage)
 * [Project Structure](#project-structure)
-* [Contributing](#contributing)
 * [License](#license)
-* [Contact](#contact)
-* [Acknowledgements](#acknowledgements)
 
 ## About The Project
 
