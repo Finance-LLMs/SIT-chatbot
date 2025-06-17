@@ -37,7 +37,7 @@ This project utilizes the following major frameworks and libraries:
 
 **Backend (Node.js):**
 * Express.js
-* @11labs/client
+* @elevenlabs/client
 
 **Backend (Python):**
 * FastAPI
