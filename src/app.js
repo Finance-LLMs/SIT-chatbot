@@ -340,8 +340,9 @@ async function startSpeechToText() {
                         
                         // If handleStopSpeaking wasn't called yet, update the UI
                         if (isRecording) {
-                            // Display the transcribed text
-                            addMessageToChat(user_input, 'user');
+                            // Don't automatically display the transcribed text as a user message
+                            // Only show what was transcribed in the chat as a system message
+                            addMessageToChat(`Transcribed: "${result.text}"`, 'bot');
                             
                             // Update UI elements
                             document.getElementById('stopSpeakingButton').style.display = 'none';
@@ -725,7 +726,7 @@ async function handleStopSpeaking() {
         
         // Update UI to show processing state
         updateSpeechStatus(false);
-        addMessageToChat('Processing your speech...', 'bot');
+        addMessageToChat('Processing your speech... Click "Send to Agent" when ready.', 'bot');
         
         // Stop the STT stream - this will trigger the transcription process
         await stopSpeechToText();
@@ -757,6 +758,10 @@ async function handleSendToAgent() {
         
         // Send the processed text to the agent
         if (user_input) {
+            // First, add the user message to the chat
+            addMessageToChat(user_input, 'user');
+            
+            // Then send it to the agent
             await sendProcessedText(user_input);
         }
         
