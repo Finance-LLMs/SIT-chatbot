@@ -665,6 +665,80 @@ body::before {
     }
 }
 
+/* Speech-to-text buttons styling */
+.start-speaking-button {
+    background: linear-gradient(135deg, #4CAF50, #2E7D32) !important;
+}
+
+.stop-speaking-button {
+    background: linear-gradient(135deg, #FF5722, #D32F2F) !important;
+}
+
+.send-to-agent-button {
+    background: linear-gradient(135deg, #2196F3, #0D47A1) !important;
+}
+
+.start-speaking-button:hover:not(:disabled), .start-speaking-button:focus:not(:disabled) {
+    background: linear-gradient(135deg, #3b8c3e, #1b5e1f) !important;
+}
+
+.stop-speaking-button:hover:not(:disabled), .stop-speaking-button:focus:not(:disabled) {
+    background: linear-gradient(135deg, #e64a19, #b71c1c) !important;
+}
+
+.send-to-agent-button:hover:not(:disabled), .send-to-agent-button:focus:not(:disabled) {
+    background: linear-gradient(135deg, #1976D2, #0a367d) !important;
+}
+
+/* Recording indicator */
+.recording-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #f44336;
+    margin-right: 8px;
+    animation: pulsate 1.5s infinite;
+}
+
+@keyframes pulsate {
+    0% {
+        transform: scale(0.8);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.8);
+        opacity: 1;
+    }
+}
+
+.recording .recording-indicator {
+    animation: pulsate 1.5s infinite;
+}
+
+/* Speech status */
+#speechStatus {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    background-color: #6b7280;
+    color: white;
+    z-index: 50;
+    transition: all 0.3s ease;
+}
+
+#speechStatus.recording {
+    background-color: #dc2626;
+}
+
 /* Subtle animations for form elements */
 .control-group {
     animation: slideInUp 0.6s ease backwards;

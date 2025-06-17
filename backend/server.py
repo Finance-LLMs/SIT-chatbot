@@ -1,11 +1,16 @@
 # backend/server.py
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import httpx
 import os
+import sys
 from dotenv import load_dotenv
+
+# Add parent directory to path to handle imports correctly
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from stt_elevenlabs import transcribe_audio
 
 # Load environment variables
 load_dotenv()
@@ -52,6 +57,32 @@ async def get_signed_url():
 def get_unsigned_url():
     agent_id = os.getenv("AGENT_ID")
     return {"agentId": agent_id}
+
+# API endpoint for speech-to-text transcription
+@app.post("/api/transcribe")
+async def transcribe_speech(file: UploadFile = File(...), language: str = Form("en")):
+    try:
+        # Create uploads directory if it doesn't exist
+        os.makedirs("uploads", exist_ok=True)
+        
+        # Save the uploaded file temporarily
+        file_path = f"uploads/{file.filename}"
+        with open(file_path, "wb") as f:
+            f.write(await file.read())
+        
+        # Transcribe the audio using the ElevenLabs API
+        transcript = transcribe_audio(file_path, language)
+        
+        # Clean up the temporary file
+        os.remove(file_path)
+        
+        return JSONResponse(content={"text": transcript})
+    
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"error": f"Transcription failed: {str(e)}"}
+        )
 
 # Mount static files for specific assets (CSS, JS, etc.)
 app.mount("/static", StaticFiles(directory="dist"), name="static")

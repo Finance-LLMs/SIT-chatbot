@@ -16,6 +16,65 @@ app.use((req, res, next) => {
   next();
 });
 
+// Add file upload middleware for multipart/form-data
+const multer = require("multer");
+const fs = require("fs");
+const { exec, spawn } = require("child_process");
+const upload = multer({ dest: "uploads/" });
+
+// Endpoint for speech-to-text transcription using ElevenLabs API
+app.post("/api/transcribe", upload.single("file"), async (req, res) => {
+  try {
+    console.log("Received file for transcription:", req.file);
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const filePath = req.file.path;
+    const language = req.body.language || "en";
+
+    // Run the Python script for transcription
+    const pythonProcess = spawn("python", [
+      "stt_elevenlabs.py",
+      filePath,
+      language
+    ]);
+
+    let transcript = "";
+    let errorOutput = "";
+
+    pythonProcess.stdout.on("data", (data) => {
+      transcript += data.toString();
+    });
+
+    pythonProcess.stderr.on("data", (data) => {
+      errorOutput += data.toString();
+    });
+
+    pythonProcess.on("close", (code) => {
+      // Delete the temporary file
+      try {
+        fs.unlinkSync(filePath);
+      } catch (err) {
+        console.error("Error deleting temporary file:", err);
+      }
+
+      if (code !== 0 || errorOutput) {
+        console.error("Error in Python transcription process:", errorOutput);
+        return res.status(500).json({ error: "Transcription failed", details: errorOutput });
+      }
+
+      // Clean up the transcript (remove any extra newlines)
+      transcript = transcript.trim();
+      console.log("Transcription result:", transcript);
+      res.json({ text: transcript });
+    });
+  } catch (error) {
+    console.error("Error during transcription:", error);
+    res.status(500).json({ error: "Transcription failed", details: error.message });
+  }
+});
+
 app.get("/api/signed-url", async (req, res) => {
   try {
     let agentId = process.env.AGENT_ID; // Default agent
