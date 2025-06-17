@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const path = require("path");
 const multer = require("multer");
 const FormData = require("form-data");
+const { fetch } = require('undici');
 
 dotenv.config();
 
@@ -59,47 +60,75 @@ app.get("/api/getAgentId", (req, res) => {
 // New STT endpoint
 app.post("/api/speech-to-text", upload.single("audio"), async (req, res) => {
   try {
+    console.log("Received STT request");
+    
     if (!req.file) {
+      console.error("No audio file provided");
       return res.status(400).json({ error: "No audio file provided" });
+    }
+
+    console.log(`File details: Size=${req.file.size} bytes, MimeType=${req.file.mimetype}, OriginalName=${req.file.originalname}`);
+
+    if (req.file.size < 1000) {
+      console.error(`Audio file too small: ${req.file.size} bytes`);
+      return res.status(400).json({ error: "Audio file too small - no audio detected" });
     }
 
     const xiApiKey = process.env.XI_API_KEY;
     if (!xiApiKey) {
+      console.error("Missing XI_API_KEY environment variable");
       return res.status(500).json({ error: "Missing XI_API_KEY environment variable" });
     }
-
-    console.log("Processing STT request for file:", req.file.originalname);
-
-    // Create form data for ElevenLabs API
+    
+    // Re-create the formData in a way that's compatible with the API
     const formData = new FormData();
-    formData.append("audio", req.file.buffer, {
-      filename: req.file.originalname,
-      contentType: req.file.mimetype,
+    
+    // Append the file as raw buffer with filename and mimetype
+    // Critical: Use Buffer.from to ensure we have a proper copy of the buffer
+    const fileBuffer = Buffer.from(req.file.buffer);
+    formData.append("audio", fileBuffer, {
+      filename: req.file.originalname || "recording.webm",
+      contentType: req.file.mimetype || "audio/webm",
+      knownLength: fileBuffer.length // Explicitly set the content length
     });
+    
+    console.log(`Prepared audio file: ${fileBuffer.length} bytes, type: ${req.file.mimetype || "audio/webm"}`);
+    console.log("Sending request to ElevenLabs STT API...");
 
+    // Important: Use the headers from form-data for proper multipart boundaries
     const response = await fetch("https://api.elevenlabs.io/v1/speech-to-text", {
       method: "POST",
+      // This is critical: get headers from formData and add API key
       headers: {
-        "xi-api-key": xiApiKey,
-        ...formData.getHeaders(),
+        ...formData.getHeaders(), // This provides the correct Content-Type with boundary
+        "xi-api-key": xiApiKey
       },
-      body: formData,
+      body: formData
     });
 
-    console.log("STT API response status:", response.status);
-
+    console.log(`ElevenLabs STT API response status: ${response.status}`);
+    
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error("STT API error:", errorText);
-      throw new Error(`STT API failed: ${response.status}`);
+      let errorText;
+      try {
+        errorText = await response.text();
+      } catch (e) {
+        errorText = "Could not retrieve error details";
+      }
+      console.error(`ElevenLabs STT API error: ${errorText}`);
+      return res.status(response.status).json({ 
+        error: `ElevenLabs STT API error (${response.status})`, 
+        details: errorText 
+      });
     }
-
+    
     const data = await response.json();
-    console.log("STT result:", data);
+    console.log("STT successful, transcribed text:", data.text);
     res.json({ text: data.text || "" });
+    
   } catch (error) {
-    console.error("Error in /api/speech-to-text:", error);
-    res.status(500).json({ error: "Failed to convert speech to text" });
+    console.error("STT endpoint error:", error);
+    res.status(500).json({ error: error.message });
   }
 });
 

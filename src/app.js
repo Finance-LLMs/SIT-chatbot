@@ -161,20 +161,51 @@ async function initializeMediaRecorder() {
             } 
         });
         
+        // Check what MIME types are supported
+        const supportedTypes = [
+            'audio/webm;codecs=opus',
+            'audio/webm',
+            'audio/mp4',
+            'audio/wav'
+        ];
+        
+        let mimeType = 'audio/webm';
+        for (const type of supportedTypes) {
+            if (MediaRecorder.isTypeSupported(type)) {
+                mimeType = type;
+                console.log('Using MIME type:', mimeType);
+                break;
+            }
+        }
+        
         mediaRecorder = new MediaRecorder(stream, {
-            mimeType: 'audio/webm;codecs=opus'
+            mimeType: mimeType
         });
         
         mediaRecorder.ondataavailable = (event) => {
             if (event.data.size > 0) {
+                console.log('Audio chunk received:', event.data.size, 'bytes');
                 audioChunks.push(event.data);
             }
         };
         
         mediaRecorder.onstop = async () => {
-            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            console.log('Recording stopped, processing', audioChunks.length, 'chunks');
+            const audioBlob = new Blob(audioChunks, { type: mimeType });
+            console.log('Final audio blob:', audioBlob.size, 'bytes, type:', audioBlob.type);
             audioChunks = [];
+            
+            if (audioBlob.size === 0) {
+                showError('No audio recorded. Please try again.');
+                return;
+            }
+            
             await processAudioWithSTT(audioBlob);
+        };
+        
+        mediaRecorder.onerror = (event) => {
+            console.error('MediaRecorder error:', event.error);
+            showError('Audio recording error: ' + event.error.message);
         };
         
         return true;
@@ -200,6 +231,9 @@ async function startRecording() {
         isRecording = true;
         updateRecordingUI(true);
         console.log('Started recording...');
+        
+        // Show a helpful message
+        addMessageToChat('🎤 Recording started. Speak clearly and click stop when done.', 'system');
     }
 }
 
@@ -210,6 +244,9 @@ async function stopRecording() {
         isRecording = false;
         updateRecordingUI(false);
         console.log('Stopped recording...');
+        
+        // Remove the recording message
+        removeLastSystemMessage();
     }
 }
 
@@ -217,20 +254,52 @@ async function stopRecording() {
 async function processAudioWithSTT(audioBlob) {
     try {
         console.log('Processing audio with STT...', audioBlob);
+        console.log('Audio blob size:', audioBlob.size, 'bytes');
+        console.log('Audio blob type:', audioBlob.type);
+        
+        // Validate audio before sending
+        if (audioBlob.size < 1000) {
+            console.error('Audio file too small, likely no speech detected');
+            showError('Recording too short. Please speak longer and try again.');
+            return;
+        }
         
         // Show processing state
         addMessageToChat('Processing audio...', 'system');
         
         const formData = new FormData();
-        formData.append('audio', audioBlob, 'recording.webm');
+        
+        // Use the detected MIME type from the blob
+        const fileName = `recording-${Date.now()}.${audioBlob.type.split('/')[1] || 'webm'}`;
+        formData.append('audio', audioBlob, fileName);
+        
+        console.log(`Sending STT request with filename: ${fileName}`);
         
         const response = await fetch('/api/speech-to-text', {
             method: 'POST',
             body: formData
         });
         
+        console.log('STT response status:', response.status);
+        
         if (!response.ok) {
-            throw new Error(`STT API failed: ${response.status}`);
+            let errorData;
+            try {
+                errorData = await response.json();
+                console.error('STT API error response:', errorData);
+            } catch (e) {
+                const errorText = await response.text().catch(() => null);
+                console.error('STT API error text:', errorText);
+                errorData = { error: 'Unknown error', details: errorText };
+            }
+            
+            let errorMessage = `STT API failed: ${response.status}`;
+            if (errorData && errorData.details) {
+                errorMessage += ` - ${errorData.details}`;
+            } else if (errorData && errorData.error) {
+                errorMessage += ` - ${errorData.error}`;
+            }
+            throw new Error(errorMessage);
         }
         
         const data = await response.json();
@@ -250,12 +319,12 @@ async function processAudioWithSTT(audioBlob) {
         } else {
             // Remove the processing message and show error
             removeLastSystemMessage();
-            showError('No speech detected. Please try again.');
+            showError('No speech detected. Please speak clearly and try again.');
         }
     } catch (error) {
         console.error('STT processing failed:', error);
         removeLastSystemMessage();
-        showError('Failed to process audio. Please try again.');
+        showError(`Failed to process audio: ${error.message}`);
     }
 }
 
