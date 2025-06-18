@@ -349,9 +349,6 @@ async function startSpeechToText() {
                             document.getElementById('startSpeakingButton').style.display = 'flex';
                             document.getElementById('startSpeakingButton').disabled = false;
                             document.getElementById('sendToAgentButton').style.display = 'flex';
-                            
-                            updateSpeechStatus(false);
-                            isRecording = false;
                         }
                     }
                 } catch (error) {
