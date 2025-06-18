@@ -42,6 +42,27 @@ def retrieve_top_k_chunks(
     print(f"✅ Retrieved {len(results)} documents for query: {query!r}")
     return results
 
+def retrieve_top_k_chunks_as_strings(
+    query: str,
+    k: int = 5,
+    persist_dir: str = "./new_sit_vdb_hgface",
+    collection_name: str = "sit_collection",
+    model_name: str = "sentence-transformers/all-MiniLM-L6-v2"
+) -> list[str]:
+    """
+    Retrieve the top-k relevant document chunks as strings from Chroma based on a user's query.
+
+    Returns a list of strings (the text content of each chunk).
+    """
+    docs = retrieve_top_k_chunks(
+        query=query,
+        k=k,
+        persist_dir=persist_dir,
+        collection_name=collection_name,
+        model_name=model_name
+    )
+    return [doc.page_content for doc in docs]
+
 
 if __name__ == "__main__":
     query = "Tell me about the 10th Anniversary of SIT?"
