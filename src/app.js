@@ -800,23 +800,28 @@ async function handleStopSpeaking() {
 async function handleSendToAgent() {
     const sendToAgentButton = document.getElementById('sendToAgentButton');
     const startSpeakingButton = document.getElementById('startSpeakingButton');
-    
+
     try {
         sendToAgentButton.disabled = true;
-        
+
+        // Start the agent (conversation) if not already started
+        if (!conversation) {
+            await startConversation();
+        }
+
         // Send the processed text to the agent
         if (user_input) {
             await sendProcessedText(user_input);
         }
-        
+
         // Update UI - return to speaking state
         sendToAgentButton.style.display = 'none';
         startSpeakingButton.style.display = 'flex';
         startSpeakingButton.disabled = false;
-        
+
         // Clear the input for next use
         user_input = '';
-        
+
     } catch (error) {
         console.error('Error sending text to agent:', error);
         sendToAgentButton.disabled = false;
