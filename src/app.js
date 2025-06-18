@@ -434,6 +434,9 @@ async function sendProcessedText(text) {
         return;
     }
     
+    // Add user message to chat before sending to agent
+    addMessageToChat(processedText, 'user');
+    
     try {
         // Try different methods based on what's available in the Conversation API
         if (typeof conversation.sendText === 'function') {
@@ -482,12 +485,19 @@ async function startConversation() {
             alert('Microphone permission is required for the conversation.');
             startButton.disabled = false;
             return;
-        }
-        const signedUrl = await getSignedUrl();        conversation = await Conversation.startSession({
+        }        const signedUrl = await getSignedUrl();
+        
+        conversation = await Conversation.startSession({
             signedUrl,
             disableTts: false,
             disableSpeechToText: true, // We'll manually control speech to text
-            disableAudioProcessing: false, // Allow audio processing needed for STT
+            disableAudioProcessing: true, // Disable all audio processing to prevent voice input
+            disableAutostart: true, // Prevent auto voice activation
+            voiceEnabled: false, // Explicitly disable voice input
+            autostart: false, // Prevent auto voice start
+            microphoneEnabled: false, // Disable microphone
+            inputMode: 'text', // Force text-only input mode
+            speechToTextEnabled: false, // Additional STT disable flag
             onConnect: () => {
                 console.log('Connected');
                 updateStatus(true);
@@ -495,8 +505,48 @@ async function startConversation() {
                 startButton.style.display = 'none';
                 endButton.disabled = false;
                 endButton.style.display = 'flex';
-                // Show the start speaking button
+                // Show the start speaking button - always visible during conversation
                 startSpeakingButton.style.display = 'flex';
+                startSpeakingButton.disabled = false;
+                  // Force stop any voice activity and ensure the agent doesn't listen
+                setTimeout(() => {
+                    try {
+                        // Stop any voice session that might have auto-started
+                        if (conversation && typeof conversation.endVoiceSession === 'function') {
+                            conversation.endVoiceSession();
+                            console.log('Force ended any voice session');
+                        }
+                        
+                        // Disable microphone access if available
+                        if (conversation && typeof conversation.setMicrophoneState === 'function') {
+                            conversation.setMicrophoneState(false);
+                            console.log('Disabled microphone access');
+                        }
+                        
+                        // Mute input if available
+                        if (conversation && typeof conversation.muteInput === 'function') {
+                            conversation.muteInput();
+                            console.log('Muted input');
+                        }
+                        
+                        // Stop listening if available
+                        if (conversation && typeof conversation.stopListening === 'function') {
+                            conversation.stopListening();
+                            console.log('Stopped listening');
+                        }
+                    } catch (e) {
+                        console.log('Error stopping voice activity:', e);
+                    }
+                }, 100); // Small delay to ensure connection is fully established
+                
+                // Set up periodic check to ensure voice remains disabled
+                const voiceDisableInterval = setInterval(() => {
+                    if (conversation) {
+                        enforceVoiceDisabled();
+                    } else {
+                        clearInterval(voiceDisableInterval);
+                    }
+                }, 1000); // Check every second
             },
             onDisconnect: () => {
                 console.log('Disconnected');
@@ -506,12 +556,11 @@ async function startConversation() {
                 startButton.style.display = 'flex';
                 endButton.disabled = true;
                 endButton.style.display = 'none';
-                // Hide speech buttons
+                // Hide speech buttons only on disconnect
                 document.getElementById('startSpeakingButton').style.display = 'none';
                 document.getElementById('stopSpeakingButton').style.display = 'none';
                 document.getElementById('sendToAgentButton').style.display = 'none';
-                updateSpeakingStatus({ mode: 'listening' });
-                stopMouthAnimation();
+                updateSpeakingStatus({ mode: 'listening' });                stopMouthAnimation();
             },
             onError: (error) => {
                 console.error('Conversation error:', error);
@@ -520,7 +569,7 @@ async function startConversation() {
                 startButton.style.display = 'flex';
                 endButton.disabled = true;
                 endButton.style.display = 'none';
-                // Hide speech buttons
+                // Hide speech buttons only on error
                 document.getElementById('startSpeakingButton').style.display = 'none';
                 document.getElementById('stopSpeakingButton').style.display = 'none';
                 document.getElementById('sendToAgentButton').style.display = 'none';
@@ -532,17 +581,15 @@ async function startConversation() {
                     Object.keys(msg).forEach(key => {
                         console.log(`[Frontend] msg key: ${key}, value:`, msg[key]);
                     });
-                }
-                // Handle ElevenLabs SDK v2 message structure
+                }                // Handle ElevenLabs SDK v2 message structure - only process bot messages
                 if (msg.type === 'bot_utterance') {
                     console.log('[Frontend] Adding bot_utterance to chat:', msg.text);
                     addMessageToChat(msg.text, 'bot');
-                    setInputEnabled(true);
-                } else if (msg.type === 'transcript' || msg.type === 'user_transcript') {
-                    console.log('[Frontend] Adding user transcript to chat:', msg.text);
-                    if (msg.text) {
-                        addMessageToChat(msg.text, 'user');
-                    }
+                    setInputEnabled(true);                } else if (msg.type === 'transcript' || msg.type === 'user_transcript') {
+                    // Ignore automatic voice transcripts - we handle STT manually
+                    console.log('[Frontend] Ignoring automatic transcript - using manual STT:', msg.text);
+                    // Additionally, ensure voice session is stopped if somehow active
+                    enforceVoiceDisabled();
                 } else if (msg.type === 'tts' && msg.text) {
                     console.log('[Frontend] Adding TTS to chat:', msg.text);
                     addMessageToChat(msg.text, 'bot');
@@ -551,9 +598,8 @@ async function startConversation() {
                     console.log('[Frontend] Adding AI message to chat:', msg.message);
                     addMessageToChat(msg.message, 'bot');
                 } else if (msg.source === 'user' && msg.message) {
-                    // New SDK: user transcript
-                    console.log('[Frontend] Adding user message to chat:', msg.message);
-                    addMessageToChat(msg.message, 'user');
+                    // Ignore automatic user messages - we handle user input manually
+                    console.log('[Frontend] Ignoring automatic user message - using manual input:', msg.message);
                 } else if (msg.text && !(msg.type === 'user_transcript' || msg.type === 'transcript')) {
                     // Fallback: If message has text and is not a user transcript, treat as bot message
                     console.log('[Frontend] Fallback: Adding message with text to chat as bot:', msg.text);
@@ -629,7 +675,7 @@ function resetUIElements() {
         endButton.style.display = 'none';
     }
     
-    // Reset speech buttons
+    // Hide all speech buttons when conversation ends
     if (startSpeakingButton) {
         startSpeakingButton.disabled = false;
         startSpeakingButton.style.display = 'none';
@@ -676,11 +722,13 @@ async function handleStartSpeaking() {
     
     try {
         startSpeakingButton.disabled = true;
-        
-        // Check if conversation is active
+          // Check if conversation is active
         if (!conversation) {
             throw new Error('Conversation not initialized. Please start the conversation first.');
         }
+        
+        // Ensure voice is disabled before starting our manual STT
+        enforceVoiceDisabled();
         
         // Check if the bot is currently speaking to prevent overlap
         const speakingStatus = document.getElementById('speakingStatus');
@@ -758,15 +806,12 @@ async function handleSendToAgent() {
         
         // Send the processed text to the agent
         if (user_input) {
-            // First, add the user message to the chat
-            addMessageToChat(user_input, 'user');
-            
-            // Then send it to the agent
             await sendProcessedText(user_input);
         }
         
-        // Update UI
+        // Update UI - return to speaking state
         sendToAgentButton.style.display = 'none';
+        startSpeakingButton.style.display = 'flex';
         startSpeakingButton.disabled = false;
         
         // Clear the input for next use
@@ -776,6 +821,29 @@ async function handleSendToAgent() {
         console.error('Error sending text to agent:', error);
         sendToAgentButton.disabled = false;
         alert('Failed to send text to agent. Please try again.');
+    }
+}
+
+// Function to ensure voice input remains disabled
+function enforceVoiceDisabled() {
+    if (conversation) {
+        try {
+            // Continuously disable voice features that might get re-enabled
+            if (typeof conversation.endVoiceSession === 'function') {
+                conversation.endVoiceSession();
+            }
+            if (typeof conversation.setMicrophoneState === 'function') {
+                conversation.setMicrophoneState(false);
+            }
+            if (typeof conversation.muteInput === 'function') {
+                conversation.muteInput();
+            }
+            if (typeof conversation.stopListening === 'function') {
+                conversation.stopListening();
+            }
+        } catch (e) {
+            // Silently handle errors
+        }
     }
 }
 
@@ -820,4 +888,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else {
         console.warn('[Frontend] Send to agent button not found');
     }
+    
+    // Continuously enforce voice input disabled state
+    setInterval(enforceVoiceDisabled, 500); // Check every 500ms
 });
